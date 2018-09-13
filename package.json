@@ -1,0 +1,200 @@
+{
+  "name": "electron-boilerplate",
+  "version": "1.1.0",
+  "description": "Electron boilterplate",
+  "main": "./dist/app.min.js",
+  "author": {
+    "name": "Tomas Pessanha",
+    "email": "temp@temp.com",
+    "url": "https://github.com/TPessanha"
+  },
+  "license": "MIT",
+  "homepage": "https://example.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TPessanha/ElectronBoilerplate"
+  },
+  "scripts": {
+    "build": "npm-run-all --parallel clean build:main build:renderer",
+    "build:main": "cross-env NODE_ENV=production webpack --config config/webpack.config.electron.js --profile --colors",
+    "build:renderer": "cross-env NODE_ENV=production webpack --config config/webpack.config.production.js --profile --colors",
+    "build:web": "npm run clean && cross-env NODE_ENV=production webpack --config config/webpack.config.production.web.js --profile --colors",
+    "start": "electron ./dist/app.min.js",
+    "prestart": "npm-run-all --parallel clean build",
+    "clean": "npm-run-all --parallel remove:*",
+    "remove:dist": "rimraf ./dist/*",
+    "dev": "cross-env PORT=3000 npm run start:dev_server -- --startHot start:dev --linkLife'",
+    "start:dev_server": "cross-env NODE_ENV=development ELECTRON_DISABLE_SECURITY_WARNINGS=True node scripts/dev-server.js",
+    "start:dev": "cross-env electron ./src/main.development",
+    "package": "npm run build && build --publish onTag",
+    "package:win": "npm run build && build --win --x64",
+    "package:linux": "npm run build && build --linux",
+    "package:all": "npm run build && build -mwl",
+    "test": "jest",
+    "test:cover": "jest --coverage",
+    "test:snapshot": "jest --updateSnapshot",
+    "generate:dts": "sass-dts ./src",
+    "lint": "npm-run-all --parallel lint:*",
+    "lint:eslint": "eslint src/**/*.js*",
+    "lint:tslint": "tslint -c tslint.json 'src/**/*.ts*'",
+    "format:src": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,sass,less,yaml,md}\"",
+    "format:all": "prettier --write \"*/**/*.{js,jsx,ts,tsx,json,css,scss,sass,less,yaml,md}\"",
+    "preversion": "npm-run-all lint test format:all",
+    "version": "git add -A",
+    "postversion": "git push && git push --tags"
+  },
+  "build": {
+    "productName": "ElectronBoilerplate",
+    "appId": "tp.ElectronBoilerplate",
+    "files": [
+      "dist/",
+      "dist/static/",
+      "node_modules/",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "resources/build/favicon.ico",
+      "signingHashAlgorithms": [
+        "sha256"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "installerIcon": "build/favicon.ico",
+      "uninstallerIcon": "build/favicon.ico"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "snap",
+        "AppImage"
+      ],
+      "icon": "icons",
+      "category": "Utility"
+    },
+    "snap": {
+      "confinement": "strict"
+    },
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    }
+  },
+  "keywords": [
+    "electron",
+    "boilerplate",
+    "cross-platform",
+    "react",
+    "redux",
+    "typescript",
+    "webpack",
+    "sass",
+    "hot",
+    "reload",
+    "jest"
+  ],
+  "devDependencies": {
+    "@types/lodash": "^4.14.116",
+    "@types/lodash-es": "^4.17.1",
+    "@types/node": "^10.9.4",
+    "@types/react": "^16.4.14",
+    "@types/react-dom": "^16.0.7",
+    "@types/react-hot-loader": "^4.1.0",
+    "ajv": "^6.5.3",
+    "autoprefixer": "^9.1.5",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-react-optimize": "^1.0.1",
+    "copy-webpack-plugin": "^4.5.2",
+    "cross-env": "^5.2.0",
+    "css-loader": "^1.0.0",
+    "electron": "^2.0.9",
+    "electron-builder": "^20.28.4",
+    "electron-debug": "^2.0.0",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-react-devtools": "^0.5.3",
+    "eslint": "^5.5.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-loader": "^2.1.0",
+    "eslint-plugin-react": "^7.11.1",
+    "file-loader": "^2.0.0",
+    "hard-source-webpack-plugin": "^0.12.0",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^23.6.0",
+    "jest-junit": "^5.1.0",
+    "json-loader": "^0.5.7",
+    "mini-css-extract-plugin": "^0.4.2",
+    "node-sass": "^4.9.3",
+    "npm-run-all": "^4.1.3",
+    "postcss-loader": "^3.0.0",
+    "prettier": "^1.14.2",
+    "react-dev-utils": "^5.0.2",
+    "react-hot-loader": "^4.3.7",
+    "react-test-renderer": "^16.5.1",
+    "redux-devtools": "^3.4.1",
+    "rimraf": "^2.6.2",
+    "sass-loader": "^7.1.0",
+    "sass-to-dts": "^0.2.2",
+    "source-map-loader": "^0.2.4",
+    "speed-measure-webpack-plugin": "^1.2.2",
+    "style-loader": "^0.23.0",
+    "sw-precache-webpack-plugin": "^0.11.5",
+    "ts-jest": "^23.1.4",
+    "ts-loader": "^5.1.0",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "tslint-loader": "^3.6.0",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.0.3",
+    "url-loader": "^1.1.1",
+    "webpack": "^4.18.1",
+    "webpack-bundle-analyzer": "^3.0.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.8",
+    "webpack-manifest-plugin": "^2.0.4",
+    "webpack-merge": "^4.1.4"
+  },
+  "dependencies": {
+    "electron-updater": "^3.1.2",
+    "lodash": "^4.17.11",
+    "react": "^16.5.1",
+    "react-dom": "^16.5.1",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
+    "redux": "^4.0.0"
+  },
+  "engines": {
+    "node": "8.11.3"
+  }
+}

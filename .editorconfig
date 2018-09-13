@@ -1,0 +1,16 @@
+# http://EditorConfig.org
+
+root = true
+
+[*]
+indent_style = tab
+indent_size = 4
+end_of_line = CRLF
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+
+[{*.yml,*.yaml,package.json}]
+indent_style = space
+indent_size = 2

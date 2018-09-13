@@ -1,0 +1,10 @@
+{
+	"defaultSeverity": "warning",
+	"extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+	"jsRules": {},
+	"rules": {
+		"semicolon": true,
+		"object-literal-sort-keys": false
+	},
+	"rulesDirectory": []
+}

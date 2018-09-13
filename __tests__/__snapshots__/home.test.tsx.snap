@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders home correctly 1`] = `
+<div>
+  <h1>
+    Hello from 
+    TypeScript
+     and 
+    React
+    !
+  </h1>
+</div>
+`;
