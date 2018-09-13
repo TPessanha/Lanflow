@@ -1,7 +1,7 @@
 {
-  "name": "electron-boilerplate",
-  "version": "1.1.0",
-  "description": "Electron boilterplate",
+  "name": "lanflow",
+  "version": "0.0.0",
+  "description": "A application to connect devices within your local network",
   "main": "./dist/app.min.js",
   "author": {
     "name": "Tomas Pessanha",
@@ -12,7 +12,7 @@
   "homepage": "https://example.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TPessanha/ElectronBoilerplate"
+    "url": "https://github.com/TPessanha/Lanflow"
   },
   "scripts": {
     "build": "npm-run-all --parallel clean build:main build:renderer",
@@ -44,8 +44,8 @@
     "postversion": "git push && git push --tags"
   },
   "build": {
-    "productName": "ElectronBoilerplate",
-    "appId": "tp.ElectronBoilerplate",
+    "productName": "Lanflow",
+    "appId": "tp.Lanflow",
     "files": [
       "dist/",
       "dist/static/",
@@ -108,16 +108,7 @@
   },
   "keywords": [
     "electron",
-    "boilerplate",
-    "cross-platform",
-    "react",
-    "redux",
-    "typescript",
-    "webpack",
-    "sass",
-    "hot",
-    "reload",
-    "jest"
+    "Lanflow"
   ],
   "devDependencies": {
     "@types/lodash": "^4.14.116",
@@ -126,7 +117,6 @@
     "@types/react": "^16.4.14",
     "@types/react-dom": "^16.0.7",
     "@types/react-hot-loader": "^4.1.0",
-    "ajv": "^6.5.3",
     "autoprefixer": "^9.1.5",
     "babel-jest": "^23.6.0",
     "babel-loader": "^7.1.5",
