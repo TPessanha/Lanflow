@@ -1,6 +1,6 @@
 {
-	"name": "Electron Boilerplate Sample",
-	"short_name": "Electron App",
+	"name": "Lanflow",
+	"short_name": "Lanflow",
 	"icons": [
 		{
 			"src": "/favicon.ico",
