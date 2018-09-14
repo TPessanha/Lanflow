@@ -3,7 +3,7 @@
 exports[`renders home correctly 1`] = `
 <div>
   <h1>
-    This is the main page!
+    This is where you browse for files in your phone.
   </h1>
 </div>
 `;

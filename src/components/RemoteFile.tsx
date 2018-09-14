@@ -1,11 +1,6 @@
 import React from "react";
 
-export interface IRemoteFileProps {
-    mobileName: string;
-}
-
-// IRemoteFileProps describes RemoteFile properties
-export class RemoteFile extends React.Component<IRemoteFileProps> {
+export class RemoteFile extends React.Component {
     public render() {
         return (
             <div>
