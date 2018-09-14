@@ -13,7 +13,7 @@ export class Home extends React.Component<IHomeProps, {}> {
 		return (
 			<div>
 				<h1 className={style.test}>
-					Hello from {this.props.compiler} and {this.props.framework}!
+					This is the main page!
 				</h1>
 			</div>
 		);

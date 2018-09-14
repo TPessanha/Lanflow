@@ -8,6 +8,13 @@
     "email": "temp@temp.com",
     "url": "https://github.com/TPessanha"
   },
+  "contributors": [
+    {
+      "name": "Thales Parreira",
+      "email": "thales.parreira@temp.pt",
+      "url":"https://github.com/tparreira93"
+    }
+  ],
   "license": "MIT",
   "homepage": "https://example.com",
   "repository": {
