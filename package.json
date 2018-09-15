@@ -111,6 +111,7 @@
     "Lanflow"
   ],
   "devDependencies": {
+    "@types/jest": "^23.3.2",
     "@types/lodash": "^4.14.116",
     "@types/lodash-es": "^4.17.1",
     "@types/node": "^10.9.4",
