@@ -12,6 +12,7 @@
 	},
 	"extends": ["eslint:recommended", "plugin:react/recommended", "prettier"],
 	"rules": {
-		"semi": 2
+		"semi": 2,
+		"prefer-template": "warn"
 	}
 }

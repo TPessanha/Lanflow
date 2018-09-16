@@ -1,8 +1,8 @@
 {
 	"presets": ["env", "react"],
+	"plugins": ["lodash"],
 	"env": {
 		"production": {
-			"plugins": ["lodash"],
 			"presets": ["react-optimize"]
 		},
 		"development": {
