@@ -5,7 +5,15 @@
 	"rules": {
 		"semicolon": true,
 		"object-literal-sort-keys": false,
-		"prefer-template": [true, "allow-single-concat"]
+		"prefer-template": [true, "allow-single-concat"],
+		"comment-format": false,
+		"member-ordering": [true, { "order": "fields-first" }],
+		"variable-name": [
+			true,
+			"ban-keywords",
+			"check-format",
+			"allow-leading-underscore"
+		]
 	},
 	"rulesDirectory": []
 }
