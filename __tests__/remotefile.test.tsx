@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import { RemoteFile } from "../src/components/RemoteFile";
+import RemoteFile from "../src/components/RemoteFile";
 
 it("renders home correctly", () => {
 	const tree = renderer
