@@ -1,18 +1,16 @@
 import net from "net";
 
 export default class FileServer {
-	//ReadOnly
-	private readonly PORT: number;
-	private readonly HOST: string;
 	//Vars
 	private _running: boolean;
 	private server: net.Server | null;
 
-	public constructor(HOST: string, PORT: number) {
+	public constructor(
+		private readonly HOST: string,
+		private readonly PORT: number
+	) {
 		this._running = false;
 		this.server = null;
-		this.PORT = PORT;
-		this.HOST = HOST;
 	}
 
 	get running(): boolean {

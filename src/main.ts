@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import * as path from "path";
 import * as url from "url";
+import winston from "winston";
 
 let mainWindow: BrowserWindow | null;
 
@@ -33,6 +34,28 @@ function createWindow() {
 		mainWindow = null;
 	});
 }
+
+const logFolder = path.join(app.getPath("userData"), "..", "Lanflow", "logs");
+
+const LOGGER = winston.createLogger({
+	level: "info",
+	format: winston.format.json(),
+	transports: [
+		//
+		// - Write to all logs with level `info` and below to `combined.log`
+		// - Write all logs error (and below) to `error.log`.
+		//
+		new winston.transports.File({
+			filename: path.join(logFolder, "error.log"),
+			level: "error"
+		}),
+		new winston.transports.File({
+			filename: path.join(logFolder, "combined.log")
+		})
+	]
+});
+
+LOGGER.info("Started");
 
 app.on("ready", createWindow);
 
