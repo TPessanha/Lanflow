@@ -1,21 +1,18 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
-import Header from "./Header";
-import Home from "./Home";
-import RemoteFile from "./RemoteFile";
+import Main from "./Main";
+import SideBar from "./SideBar";
 export default class App extends React.Component {
 	public render() {
 		return (
-			<div>
-				<Header />
-				<Switch>
-					<Route exact={true} path="/" component={Home} />
-					<Route
-						exact={true}
-						path="/remotefile"
-						component={RemoteFile}
-					/>
-				</Switch>
+			<div
+				style={{
+					height: "100%",
+					width: "100%",
+					display: "flex"
+				}}
+			>
+				<SideBar />
+				<Main />
 			</div>
 		);
 	}

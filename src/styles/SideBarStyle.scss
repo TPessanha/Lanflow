@@ -1,0 +1,79 @@
+:local(.sideNav) {
+	width: 360px;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+	color: hsl(0, 0%, 22%);
+	border-right: 1px solid hsl(0, 0%, 88%);
+	background-color: hsl(0, 0%, 96%);
+    display: inline-block;
+}
+
+:local(.sideNavHeader) {
+	position: relative;
+	padding: 2rem;
+}
+
+:local(.sideNavTitle) {
+	text-decoration: none;
+	text-transform: uppercase;
+	font-weight: 400;
+	line-height: 1;
+	margin: 0;
+}
+
+.sideNavTitle strong {
+	font-weight: 600;
+	color: hsl(0,0%,11%);
+}
+
+:local(.sideNavIcon) {
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	top: 2rem; /* magic */
+	right: 1.75rem; /* magic */
+}
+
+:local(.notificationBadge) {
+	background: hsl(8, 59%, 51%);
+	border: 0.7px solid hsl(0, 0%, 88%);
+	color: hsl(0, 0%, 100%);
+
+	border-radius: 50%;
+
+	text-align: center;
+	text-decoration: none;
+	font-size: 0.7em;
+	padding: 5px;
+
+	position: absolute;
+	
+	top: 1.3rem;
+	right: 1.4rem;
+}
+
+a {
+	text-decoration: none;
+}
+
+:local(.sideNavSeparator) {
+	width: 90%;
+	border: 1px solid hsl(0, 0%, 88%);
+}
+
+:local(.sideNavItem) {
+	text-transform: uppercase;
+	font-weight: 300;
+	line-height: 2;
+	margin: 0;
+}
+
+li a:hover {
+    color: white;
+    background-color: hsl(0%, 0%, 72.2%);
+}
+li a {
+    display: block;
+    padding: 8px 16px;
+}
