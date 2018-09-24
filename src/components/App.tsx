@@ -1,6 +1,11 @@
 import React from "react";
-import Main from "./Main";
+import { Route, Switch } from "react-router-dom";
+import * as style from "../styles/AppStyle.scss";
+import Home from "./Home";
+import Notifications from "./Notifications";
+import RemoteFile from "./RemoteFile";
 import SideBar from "./SideBar";
+
 export default class App extends React.Component {
 	public render() {
 		return (
@@ -12,7 +17,21 @@ export default class App extends React.Component {
 				}}
 			>
 				<SideBar />
-				<Main />
+				<div className={style.content}>
+					<Switch>
+						<Route exact={true} path="/" component={Home} />
+						<Route
+							exact={true}
+							path="/remotefile"
+							component={RemoteFile}
+						/>
+						<Route
+							exact={true}
+							path="/notifications"
+							component={Notifications}
+						/>
+					</Switch>
+				</div>
 			</div>
 		);
 	}
