@@ -61,17 +61,17 @@ module.exports = merge(productionConfig, {
 		}),
 		new CopyWebpackPlugin([
 			{
-				from: appPaths.resources + "/*.ico",
+				from: `${appPaths.resources}/*.ico`,
 				to: appPaths.appDist,
 				flatten: true
 			},
 			{
-				from: appPaths.resources + "/*.json",
+				from: `${appPaths.resources}/*.json`,
 				to: appPaths.appDist,
 				flatten: true
 			},
 			{
-				from: appPaths.resources + "/*.png",
+				from: `${appPaths.resources}/*.png`,
 				to: appPaths.appDist,
 				flatten: true
 			}
