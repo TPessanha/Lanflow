@@ -78,7 +78,7 @@ module.exports = merge(productionConfig, {
 		]),
 
 		new SWPrecacheWebpackPlugin({
-			cacheId: "tp.ElectronBoilerplate",
+			cacheId: "tp.Lanflow",
 			dontCacheBustUrlsMatching: /\.\w{8}\./,
 			filename: "service-worker.js",
 			minify: true,
