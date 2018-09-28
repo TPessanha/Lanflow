@@ -28,7 +28,7 @@ export default class SideBar extends React.Component {
 					<ul
 						style={{
 							listStyle: "none",
-							margin: "20px",
+							marginTop: "-10px",
 							padding: "0px"
 						}}
 					>
