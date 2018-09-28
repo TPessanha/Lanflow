@@ -55,8 +55,8 @@ module.exports = {
 	// A set of global variables that need to be available in all test environments
 	globals: {
 		"ts-jest": {
-			tsConfigFile: "tsconfig.json",
-			useBabelrc: true
+			tsConfig: "tsconfig.json",
+			babelConfig: true
 		}
 	},
 
@@ -87,6 +87,7 @@ module.exports = {
 
 	// A preset that is used as a base for Jest's configuration
 	// preset: null,
+	preset: "ts-jest/presets/js-with-babel",
 
 	// Run tests from one or more projects
 	// projects: null,
@@ -160,8 +161,6 @@ module.exports = {
 
 	// A map from regular expressions to paths to transformers
 	transform: {
-		"^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest",
-		"^.+\\.tsx?$": "ts-jest",
 		"^.+\\.(css|sass|scss|less)$": "<rootDir>/config/jest/cssTransform.js",
 		"^(?!.*\\.(js|jsx|ts|tsx|css|sass|scss|less|json)$)":
 			"<rootDir>/config/jest/fileTransform.js"
