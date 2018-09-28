@@ -8,7 +8,7 @@ const merge = require("webpack-merge");
 const baseConfig = require("./webpack.config.base");
 const appPaths = require("./appPaths");
 //plugins
-const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
+//const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 // const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
@@ -29,7 +29,7 @@ module.exports = merge(baseConfig, {
 	plugins: [
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.NoEmitOnErrorsPlugin(),
-		new HardSourceWebpackPlugin(),
+		//new HardSourceWebpackPlugin(),
 		new HtmlWebpackPlugin({
 			inject: false,
 			template: appPaths.appSrcHtmlTemplateEjs,

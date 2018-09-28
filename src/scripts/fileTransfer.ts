@@ -1,3 +1,4 @@
+/* tslint:disable no-console */
 import fs from "fs";
 import net from "net";
 
@@ -51,45 +52,53 @@ export default class FileServer {
 		}
 	}
 
-	private JsonParse(str: string): any {
-		try {
-			return JSON.parse(str);
-		} catch (e) {
-			return null;
-		}
-	}
-
 	//connection.writer = fs.createWriteStream("", { fd });
 	private createServer(): net.Server {
 		const server = net.createServer(socket => {
+			let isPiped = false;
+			let header = Buffer.alloc(0);
+
 			const stats: IConnectionTransfer = {
 				fileSize: 0,
 				checksum: 0,
 				writer: null
 			};
+
 			socket.on("data", buffer => {
-				// tslint:disable-next-line:no-console
 				console.log("Reading");
+				if (!isPiped) {
+					try {
+						header = Buffer.concat(
+							[header, buffer],
+							header.length + buffer.length
+						);
+						if (header.length < 2) {
+							return;
+						}
 
-				try {
-					const json = this.JsonParse(
-						buffer.toString()
-					) as ISocketFileHeaderMessage;
-					if (json != null) {
-						stats.fileSize = json.fileSize;
-						stats.checksum = json.checksum;
+						const headerSize = header.readInt16BE(0);
 
-						const fd = fs.openSync(json.fileName, "ax");
-						stats.writer = fs.createWriteStream("", { fd });
-						socket.pipe(stats.writer);
-						socket.write(new Buffer([0]));
-					}
-				} catch (error) {
-					socket.destroy();
-					if (error.code === "EEXIST") {
-						throw new Error("File already exists");
-					} else {
-						throw error;
+						if (header.length === headerSize) {
+							const json = JSON.parse(
+								header.slice(2).toString()
+							) as ISocketFileHeaderMessage;
+
+							stats.fileSize = json.fileSize;
+							stats.checksum = json.checksum;
+
+							const fd = fs.openSync(json.fileName, "ax");
+							stats.writer = fs.createWriteStream("", { fd });
+							socket.pipe(stats.writer);
+							socket.write(new Buffer([0]));
+							isPiped = true;
+						}
+					} catch (error) {
+						socket.destroy();
+						if (error.code === "EEXIST") {
+							throw new Error("File already exists");
+						} else {
+							throw error;
+						}
 					}
 				}
 			});
@@ -100,7 +109,6 @@ export default class FileServer {
 					stats.fileSize === stats.writer.bytesWritten &&
 					stats.fileSize > 0
 				) {
-					// tslint:disable-next-line:no-console
 					console.log("Received file");
 				} else {
 					// tslint:disable-next-line:no-console
@@ -110,19 +118,11 @@ export default class FileServer {
 					stats.writer.end();
 					socket.end();
 				}
-				stats.writer = null;
-				stats.checksum = 0;
-				stats.fileSize = 0;
-
-				// tslint:disable-next-line:no-console
 				console.log("ended");
 			});
 		});
 
-		server.on("close", () => {
-			// tslint:disable-next-line:no-console
-			console.log("Server closed");
-		});
+		server.on("close", () => console.log("Server closed"));
 
 		return server;
 	}
