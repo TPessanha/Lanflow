@@ -1,8 +1,38 @@
+const path = require("path");
+const appPaths = require("../config/appPaths");
+const winston = require("winston");
+const chalk = require("chalk");
+
 const { app, BrowserWindow, Menu, shell } = require("electron");
 
 let menu;
 let template;
 let mainWindow = null;
+
+const logFolder = path.join(app.getPath("userData"), "..", "Lanflow", "logs");
+
+const LOGGER = winston.createLogger({
+	level: "info",
+	format: winston.format.json(),
+	transports: [
+		//
+		// - Write to all logs with level `info` and below to `combined.log`
+		// - Write all logs error (and below) to `error.log`.
+		//
+		new winston.transports.File({
+			filename: path.join(logFolder, "error-dev.log"),
+			level: "error"
+		}),
+		new winston.transports.File({
+			filename: path.join(logFolder, "combined-dev.log")
+		}),
+		new winston.transports.Console({
+			format: winston.format.simple()
+		})
+	]
+});
+
+LOGGER.info(chalk.cyan("Starting\n"));
 
 app.on("window-all-closed", () => {
 	if (process.platform !== "darwin") app.quit();
@@ -31,7 +61,8 @@ app.on("ready", () =>
 	installExtensions().then(() => {
 		mainWindow = new BrowserWindow({
 			width: 1024,
-			height: 728
+			height: 728,
+			icon: path.join(appPaths.appResources, "build", "favicon.ico")
 		});
 		const PORT = parseInt(process.env.PORT, 10) || 3000;
 		mainWindow.loadURL(`http://localhost:${PORT}`);

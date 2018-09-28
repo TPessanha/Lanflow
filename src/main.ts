@@ -10,6 +10,7 @@ function createWindow() {
 		show: false,
 		height: 600,
 		width: 800,
+		icon: path.join(__dirname, "..", "build", "favicon.ico"),
 		webPreferences: {
 			devTools: false
 		}
