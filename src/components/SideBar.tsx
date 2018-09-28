@@ -2,6 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import * as style from "../styles/SideBarStyle.scss";
 
+//Assets
+import NotificationIcon from "../assets/img/notification.svg";
+
 // The SideBar creates links that can be used to navigate
 // between routes.
 export default class SideBar extends React.Component {
@@ -16,10 +19,8 @@ export default class SideBar extends React.Component {
 						</h1>
 					</Link>
 					<Link to="/notifications">
-						<img
-							className={style.sideNavIcon}
-							src={require("../assets/img/notifications.svg")}
-						/><span className={style.notificationBadge}>20</span>
+						<NotificationIcon className={style.sideNavIcon} />
+						<span className={style.notificationBadge}>20</span>
 					</Link>
 				</div>
 				<hr className={style.sideNavSeparator} />

@@ -39,14 +39,13 @@ module.exports = {
 	dotenv: resolveApp(".env"),
 	appDist: resolveApp("dist"),
 	appHtml: resolveApp("index.html"),
-	appPublic: resolveApp("public"),
 	appSrcHtmlTemplateEjs: resolveApp("src/indexTemplate.ejs"),
 	appSrcIndex: resolveApp("src/index"),
 	appSrcMain: resolveApp("src/main"),
 	appPackageJson: resolveApp("package.json"),
 	appSrc: resolveApp("src"),
 	appNodeModules: resolveApp("node_modules"),
-	resources: resolveApp("resources/build"),
+	appResources: resolveApp("resources"),
 	publicUrl: getPublicUrl(resolveApp("package.json")),
 	servedPath: getServedPath(resolveApp("package.json"))
 };

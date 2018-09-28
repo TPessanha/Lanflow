@@ -2,6 +2,7 @@
  * Build config for electron 'Renderer Process' file
  */
 const appPaths = require("./appPaths");
+const path = require("path");
 const merge = require("webpack-merge");
 const productionConfig = require("./webpack.config.production");
 // Plugins
@@ -61,17 +62,17 @@ module.exports = merge(productionConfig, {
 		}),
 		new CopyWebpackPlugin([
 			{
-				from: `${appPaths.resources}/*.ico`,
+				from: path.join(appPaths.appResources, "build", "*.ico"),
 				to: appPaths.appDist,
 				flatten: true
 			},
 			{
-				from: `${appPaths.resources}/*.json`,
+				from: path.join(appPaths.appResources, "build", "*.json"),
 				to: appPaths.appDist,
 				flatten: true
 			},
 			{
-				from: `${appPaths.resources}/*.png`,
+				from: path.join(appPaths.appResources, "build", "*.png"),
 				to: appPaths.appDist,
 				flatten: true
 			}

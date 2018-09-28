@@ -3,14 +3,28 @@
  */
 
 const appPaths = require("./appPaths");
+const getClientEnvironment = require("./env");
+const webpack = require("webpack");
 // Plugins
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const NODE_ENV = process.env.NODE_ENV || "production";
 
+// Webpack uses `publicPath` to determine where the app is being served from.
+// It requires a trailing slash, or the file assets will get an incorrect path.
+const publicPath = appPaths.servedPath;
+// Source maps are resource heavy and can cause out of memory issue for large source files.
+const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== "false";
+// `publicUrl` is just like `publicPath`, but we will provide it to our app
+// as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
+// Omit trailing slash as %PUBLIC_URL%/xyz looks better than %PUBLIC_URL%xyz.
+const publicUrl = publicPath.slice(0, -1);
+// Get environment variables to inject into our app.
+const env = getClientEnvironment(publicUrl);
+
 module.exports = {
 	mode: NODE_ENV,
-	devtool: "source-map",
+	devtool: shouldUseSourceMap ? "source-map" : false,
 	bail: true,
 	//stats: {  },
 	resolve: {
@@ -64,14 +78,17 @@ module.exports = {
 					},
 					{
 						test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-						use: {
-							loader: require.resolve("url-loader"),
-							options: {
-								limit: 10000,
-								mimetype: "image/svg+xml",
-								name: "static/media/[name].[hash:8].[ext]"
+						use: [
+							{
+								loader: "babel-loader"
+							},
+							{
+								loader: "react-svg-loader",
+								options: {
+									jsx: true
+								}
 							}
-						}
+						]
 					},
 					{
 						test: /\.(?:ico|gif|png|jpg|jpeg|webp)$/,
@@ -188,6 +205,7 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: "static/css/[name].[contenthash:8].css",
 			chunkFilename: "static/css/[id].[contenthash:8].css"
-		})
+		}),
+		new webpack.DefinePlugin(env.stringified)
 	]
 };
