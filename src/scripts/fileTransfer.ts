@@ -8,18 +8,18 @@ import { generateHash } from "./utils/cryptoUtil";
  * Interface for a helper connection object containing information for a file transfer
  */
 interface IFileTransfer {
+	buffer: Buffer;
 	header: IFileHeader;
 	writer: fs.WriteStream | null;
 	reader: fs.ReadStream | null;
-	buffer: Buffer;
 }
 /**
  * Interface for a file header, contains info about the file itself.
  */
 interface IFileHeader {
+	checksum: string;
 	contentLength: number;
 	contentName: string;
-	checksum: string;
 }
 /**
  * File server class is the server part of the file transfer implementation,
@@ -103,26 +103,20 @@ export default class FileServer {
 	 * @return A string with the new full path to use.
 	 */
 	private getUnusedName(filePath: string): string {
-		let counter = 1;
 		const originalFilePath = filePath;
+		const fDir = path.dirname(originalFilePath);
 		const fExtension = path.extname(originalFilePath);
 		const fName = path.basename(originalFilePath, fExtension);
-		const fDir = path.dirname(originalFilePath);
 
+		//TODO MAKE THIS ASYNC
+		let counter = 1;
 		while (fs.existsSync(filePath)) {
-			if (counter === 1) {
-				filePath = path.format({
-					dir: fDir,
-					name: `${fName} - Copy`,
-					ext: fExtension
-				});
-			} else {
-				filePath = path.format({
-					dir: fDir,
-					name: `${fName} - Copy (${counter})`,
-					ext: fExtension
-				});
-			}
+			filePath = path.format({
+				dir: fDir,
+				name: `${fName} - Copy${counter === 1 ? "" : `(${counter})`}`,
+				ext: fExtension
+			});
+
 			counter++;
 		}
 		return filePath;
@@ -136,14 +130,14 @@ export default class FileServer {
 			//let isPiped = false;
 
 			const stats: IFileTransfer = {
+				buffer: Buffer.alloc(0),
 				header: {
 					checksum: "0",
 					contentLength: 0,
 					contentName: ""
 				},
 				reader: null,
-				writer: null,
-				buffer: Buffer.alloc(0)
+				writer: null
 			};
 
 			const onData = (data: Buffer) => {
