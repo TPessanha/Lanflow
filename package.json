@@ -118,6 +118,9 @@
     "Lanflow"
   ],
   "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
     "@types/jest": "^23.3.2",
     "@types/node": "^10.9.4",
     "@types/react": "^16.4.14",
@@ -127,12 +130,9 @@
     "@types/react-test-renderer": "^16.0.2",
     "autoprefixer": "^9.1.5",
     "babel-jest": "^23.6.0",
-    "babel-loader": "^7.1.5",
-    "babel-plugin-lodash": "^3.3.4",
+    "babel-loader": "^8.0.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-es2015-classes": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
     "babel-preset-react-optimize": "^1.0.1",
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^5.2.0",
