@@ -83,7 +83,7 @@ module.exports = {
 								loader: "babel-loader"
 							},
 							{
-								loader: "react-svg-loader",
+								loader: require.resolve("react-svg-loader"),
 								options: {
 									jsx: true
 								}
