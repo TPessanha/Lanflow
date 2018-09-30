@@ -3,6 +3,7 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"target": "es5",
+		"lib": ["es2018", "dom"],
 
 		"strict": true,
 		"alwaysStrict": true,
@@ -28,13 +29,5 @@
 			"*": ["node_modules/*"]
 		}
 	},
-	"include": ["src/**/*.ts*"],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"release",
-		"resources",
-		"scripts",
-		"config"
-	]
+	"include": ["src/**/*.ts*", "node_modules/@types/**/*.d.ts"]
 }
