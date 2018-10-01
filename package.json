@@ -195,9 +195,7 @@
     "winston": "^3.1.0"
   },
   "greenkeeper": {
-    "ignore": [
-      "react-sidenav"
-    ]
+    "ignore": []
   },
   "engines": {
     "node": "8.12.0"
