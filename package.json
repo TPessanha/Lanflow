@@ -194,6 +194,11 @@
     "redux": "^4.0.0",
     "winston": "^3.1.0"
   },
+  "greenkeeper": {
+    "ignore": [
+      "react-sidenav"
+    ]
+  },
   "engines": {
     "node": "8.12.0"
   }
