@@ -96,30 +96,35 @@ export default class FileServer {
 	}
 
 	/**
-	 * Sees if the name is unused if it is use Windows convention of appending
-	 *  "copy" and "copy (2)", until an unused name is found.
+	 * Finds an unused name it uses Windows convention of appending
+	 * a counter to the name example: "testFile - (1).pfd", until an unused name is found.
 	 *
 	 * @param filePath A string with the full path of the file.
-	 * @return A string with the new full path to use.
+	 * @return A Promise with the new full path to use.
 	 */
-	private getUnusedName(filePath: string): string {
-		const originalFilePath = filePath;
-		const fDir = path.dirname(originalFilePath);
-		const fExtension = path.extname(originalFilePath);
-		const fName = path.basename(originalFilePath, fExtension);
+	private getUnusedName(filePath: string): Promise<string> {
+		return new Promise((resolve, reject) => {
+			try {
+				const originalFilePath = filePath;
+				const fDir = path.dirname(originalFilePath);
+				const fExtension = path.extname(originalFilePath);
+				const fName = path.basename(originalFilePath, fExtension);
 
-		//TODO MAKE THIS ASYNC
-		let counter = 1;
-		while (fs.existsSync(filePath)) {
-			filePath = path.format({
-				dir: fDir,
-				name: `${fName} - Copy${counter === 1 ? "" : `(${counter})`}`,
-				ext: fExtension
-			});
-
-			counter++;
-		}
-		return filePath;
+				let counter = 1;
+				fs.readdir(fDir, (err, files) => {
+					while (files.includes(path.basename(filePath))) {
+						filePath = path.format({
+							dir: fDir,
+							name: `${fName} - (${counter++})`,
+							ext: fExtension
+						});
+					}
+					resolve(filePath);
+				});
+			} catch (error) {
+				reject(error);
+			}
+		});
 	}
 
 	/**
@@ -140,22 +145,28 @@ export default class FileServer {
 				writer: null
 			};
 
-			const onData = (data: Buffer) => {
+			const onData = async (data: Buffer) => {
 				if (this.readSocketFileHeader(data, stats)) {
-					//TODO create a function for opening the file and treat same name error.
-					stats.header.contentName = this.getUnusedName(
-						stats.header.contentName
-					);
-					fs.open(stats.header.contentName, "ax", (err, fd) => {
-						if (err) {
-							throw err;
-						}
-						stats.writer = fs.createWriteStream("", { fd });
+					try {
+						stats.header.contentName = await this.getUnusedName(
+							stats.header.contentName
+						);
 
-						socket.pipe(stats.writer);
-						socket.removeListener("data", onData);
-						socket.write(new Buffer([0]));
-					});
+						fs.open(stats.header.contentName, "ax", (err, fd) => {
+							if (err) {
+								throw err;
+							}
+							stats.writer = fs.createWriteStream("", {
+								fd
+							});
+
+							socket.pipe(stats.writer);
+							socket.removeListener("data", onData);
+							socket.write(new Buffer([0]));
+						});
+					} catch (error) {
+						throw error;
+					}
 				}
 			};
 
