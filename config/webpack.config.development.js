@@ -18,6 +18,7 @@ const smp = new SpeedMeasurePlugin();
 const speedReport = false;
 
 const webpackConfig = merge(baseConfig, {
+	target: "electron-renderer",
 	devtool: "cheap-module-source-map",
 	mode: process.env.NODE_ENV || "development",
 	entry: {

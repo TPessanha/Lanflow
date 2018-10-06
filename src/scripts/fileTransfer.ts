@@ -1,6 +1,6 @@
 /* tslint:disable no-console */
 import fs from "fs";
-import net from "net";
+import net, { Socket } from "net";
 import path from "path";
 import { generateHash } from "./utils/cryptoUtil";
 
@@ -49,20 +49,68 @@ export default class FileServer {
 	 * Start listening for connections
 	 */
 	public listen() {
-		if (!this.server.listening) {
-			this.server.listen(this.PORT, this.HOST);
-		} else {
-			throw new Error(`Server already running`);
-		}
+		this.server.listen(this.PORT, this.HOST);
 	}
 
 	/**
-	 * Prevents new connections, existing connections will remain active.
+	 * Stops the server from accepting new connections and keeps existing
+	 * connections. This function is asynchronous, the server is finally
+	 * closed when all connections are ended and the server emits a 'close' event.
+	 *
+	 * The optional callback will be called once the 'close' event occurs.
+	 *
+	 * @param callback Called when the server is closed
 	 */
-	public close() {
-		if (this.server) {
-			this.server.close();
-		}
+	public close(callback?: () => void) {
+		this.server.close(callback);
+	}
+
+	/**
+	 * Sends a file located at 'filePath' to using 'host:port'
+	 *
+	 * @param host The host
+	 * @param port The port
+	 * @param filePath The path to the file
+	 */
+	public sendFile(host: string, port: number, filePath: string) {
+		fs.stat(filePath, (err, stats) => {
+			if (err) {
+				throw err;
+			}
+			const name = path.basename(filePath);
+			const size = stats.size;
+			const client = net.createConnection(port, host);
+			client.once("connect", () => {
+				fs.readFile(filePath, (_err, data) => {
+					if (_err) {
+						throw _err;
+					}
+					const fileHeader = {
+						checksum: generateHash(data, "md5", "hex"),
+						contentLength: size,
+						contentName: name
+					} as IFileHeader;
+					const bufHeader = Buffer.from(JSON.stringify(fileHeader));
+					const bufHeaderSize = Buffer.alloc(2);
+					bufHeaderSize.writeUInt16BE(bufHeader.length, 0);
+					client.write(bufHeaderSize);
+					client.write(bufHeader);
+				});
+			});
+			client.on("data", data => {
+				console.log(data.toString());
+				if (data[0] === 0) {
+					const readStream = fs.createReadStream(filePath);
+					readStream.pipe(client);
+					readStream.on("close", () => {
+						client.end();
+					});
+				}
+			});
+			client.on("end", () => {
+				console.log("disconnected from server");
+			});
+		});
 	}
 
 	/**
@@ -81,7 +129,7 @@ export default class FileServer {
 
 		if (
 			stats.buffer.length >= 2 &&
-			stats.buffer.length === stats.buffer.readInt16BE(0)
+			stats.buffer.length - 2 === stats.buffer.readInt16BE(0)
 		) {
 			const json = JSON.parse(
 				stats.buffer.slice(2).toString()
@@ -154,6 +202,7 @@ export default class FileServer {
 
 						fs.open(stats.header.contentName, "ax", (err, fd) => {
 							if (err) {
+								socket.write(new Buffer([1]));
 								throw err;
 							}
 							stats.writer = fs.createWriteStream("", {
