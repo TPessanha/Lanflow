@@ -1,7 +1,6 @@
 /**
  * Base webpack config used across other specific configs
  */
-
 const appPaths = require("./appPaths");
 const getClientEnvironment = require("./env");
 const webpack = require("webpack");
@@ -22,7 +21,7 @@ const publicUrl = publicPath.slice(0, -1);
 // Get environment variables to inject into our app.
 const env = getClientEnvironment(publicUrl);
 
-module.exports = {
+const webpackConfig = {
 	mode: NODE_ENV,
 	devtool: shouldUseSourceMap ? "source-map" : false,
 	bail: true,
@@ -111,7 +110,10 @@ module.exports = {
 							{
 								loader: require.resolve("ts-loader"),
 								options: {
-									transpileOnly: true,
+									transpileOnly:
+										NODE_ENV === "production"
+											? false
+											: true,
 									compilerOptions: {
 										noEmit: false
 									}
@@ -209,3 +211,5 @@ module.exports = {
 		new webpack.DefinePlugin(env.stringified)
 	]
 };
+
+module.exports = webpackConfig;

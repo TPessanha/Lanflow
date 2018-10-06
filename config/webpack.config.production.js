@@ -1,7 +1,6 @@
 /**
  * Build config for electron 'Renderer Process' file
  */
-
 const appPaths = require("./appPaths");
 const merge = require("webpack-merge");
 const baseConfig = require("./webpack.config.base");
@@ -10,8 +9,13 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 	.BundleAnalyzerPlugin;
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 
-module.exports = merge(baseConfig, {
+const smp = new SpeedMeasurePlugin();
+//Should we run speed-measure-webpack-plugin
+const speedReport = require("minimist")(process.argv.slice(2)).buildSpeedReport;
+
+const webpackConfig = merge(baseConfig, {
 	target: "electron-renderer",
 	entry: { index: appPaths.appSrcIndex },
 	module: {
@@ -103,3 +107,5 @@ module.exports = merge(baseConfig, {
 		})
 	]
 });
+
+module.exports = speedReport ? smp.wrap(webpackConfig) : webpackConfig;

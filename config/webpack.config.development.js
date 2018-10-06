@@ -2,6 +2,7 @@
  * Build config for development process that uses Hot-Module-Replacement
  * https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
  */
+/* eslint-disable no-console */
 
 const webpack = require("webpack");
 const merge = require("webpack-merge");
@@ -10,12 +11,13 @@ const appPaths = require("./appPaths");
 //plugins
 //const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 
-// const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const smp = new SpeedMeasurePlugin();
+//Should we run speed-measure-webpack-plugin
+const speedReport = false;
 
-// const smp = new SpeedMeasurePlugin();
-
-module.exports = merge(baseConfig, {
+const webpackConfig = merge(baseConfig, {
 	devtool: "cheap-module-source-map",
 	mode: process.env.NODE_ENV || "development",
 	entry: {
@@ -40,3 +42,5 @@ module.exports = merge(baseConfig, {
 		})
 	]
 });
+
+module.exports = speedReport ? smp.wrap(webpackConfig) : webpackConfig;

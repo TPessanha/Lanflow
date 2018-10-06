@@ -10,8 +10,13 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const SWPrecacheWebpackPlugin = require("sw-precache-webpack-plugin");
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
 
-module.exports = merge(productionConfig, {
+const smp = new SpeedMeasurePlugin();
+//Should we run speed-measure-webpack-plugin
+const speedReport = require("minimist")(process.argv.slice(2)).buildSpeedReport;
+
+const webpackConfig = merge(productionConfig, {
 	target: "web",
 	output: {
 		libraryTarget: "var"
@@ -88,3 +93,5 @@ module.exports = merge(productionConfig, {
 		})
 	]
 });
+
+module.exports = speedReport ? smp.wrap(webpackConfig) : webpackConfig;
