@@ -30,9 +30,6 @@ const options = {
 	}
 };
 
-//const compiler = webpack(config);
-//const devServer = new webpackDevServer(compiler, options);
-
 choosePort(HOST, DEFAULT_PORT)
 	.then(port => {
 		if (port == null) {
