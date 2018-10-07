@@ -1,5 +1,6 @@
 {
   "name": "lanflow",
+  "productName": "Lanflow",
   "version": "0.0.0",
   "description": "A application to connect devices within your local network",
   "main": "./dist/app.min.js",
@@ -32,7 +33,7 @@
     "remove:dist": "rimraf ./dist/*",
     "dev": "cross-env PORT=3000 npm run start:dev_server --  --startHot start:dev --linkLife",
     "start:dev_server": "cross-env NODE_ENV=development ELECTRON_DISABLE_SECURITY_WARNINGS=True node scripts/dev-server.js",
-    "start:dev": "cross-env electron ./src/main.development",
+    "start:dev": "electron ./src/main.development",
     "package": "npm run build && build --publish onTag",
     "package:win": "npm run build && build --win --x64",
     "package:linux": "npm run build && build --linux",

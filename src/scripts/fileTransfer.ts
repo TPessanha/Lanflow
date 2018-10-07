@@ -1,9 +1,10 @@
-/* tslint:disable no-console */
 import fs from "fs";
-import net, { Socket } from "net";
+import net from "net";
 import path from "path";
 import { generateHash } from "./utils/cryptoUtil";
+import Logger from "./utils/Logger";
 
+const LOGGER = Logger.getLogger();
 /**
  * Interface for a helper connection object containing information for a file transfer
  */
@@ -22,21 +23,19 @@ interface IFileHeader {
 	contentName: string;
 }
 /**
- * File server class is the server part of the file transfer implementation,
- * To use create a new FileServer and run listening
+ * File transfer implementation server and client,
+ * To use create a new FileServer and run listening if you want to receive,
+ * use the sendFile if you want to send.
  */
 export default class FileServer {
-	get listening(): boolean {
-		return this.server.listening;
-	}
 	//Vars
 	private server: net.Server;
 
 	/**
 	 * Constructor for the FileServer class.
 	 *
-	 * @param HOST The host to listen on.
-	 * @param PORT The port to listen on.
+	 * @param {string} HOST The host to listen on.
+	 * @param {number} PORT The port to listen on.
 	 */
 	public constructor(
 		private readonly HOST: string,
@@ -45,10 +44,15 @@ export default class FileServer {
 		this.server = this.createServer();
 	}
 
+	get listening(): boolean {
+		return this.server.listening;
+	}
+
 	/**
 	 * Start listening for connections
 	 */
 	public listen() {
+		LOGGER.debug("Server listening");
 		this.server.listen(this.PORT, this.HOST);
 	}
 
@@ -59,18 +63,19 @@ export default class FileServer {
 	 *
 	 * The optional callback will be called once the 'close' event occurs.
 	 *
-	 * @param callback Called when the server is closed
+	 * @param {Function} callback Called when the server is closed
 	 */
 	public close(callback?: () => void) {
 		this.server.close(callback);
 	}
 
 	/**
-	 * Sends a file located at 'filePath' to using 'host:port'
+	 * Sends a file located at 'filePath' to using 'host:port'.
+	 * The server doesn't need to be listenning to send files.
 	 *
-	 * @param host The host
-	 * @param port The port
-	 * @param filePath The path to the file
+	 * @param {string} host The host
+	 * @param {number} port The port
+	 * @param {string} filePath The path to the file
 	 */
 	public sendFile(host: string, port: number, filePath: string) {
 		fs.stat(filePath, (err, stats) => {
@@ -98,7 +103,7 @@ export default class FileServer {
 				});
 			});
 			client.on("data", data => {
-				console.log(data.toString());
+				LOGGER.debug(data.toString());
 				if (data[0] === 0) {
 					const readStream = fs.createReadStream(filePath);
 					readStream.pipe(client);
@@ -108,7 +113,7 @@ export default class FileServer {
 				}
 			});
 			client.on("end", () => {
-				console.log("disconnected from server");
+				LOGGER.info("disconnected from server");
 			});
 		});
 	}
@@ -116,10 +121,9 @@ export default class FileServer {
 	/**
 	 * Receive the File Header form the connection and write it to stats.
 	 *
-	 * @param socket The socket the data is being read from
-	 * @param data The new data received
-	 * @param stats The connection info
-	 * @return returns true if header is fully read, false otherwise
+	 * @param {Buffer} data The new data received
+	 * @param {IFileTransfer} stats The connection info
+	 * @returns {boolean} true if header is fully read, false otherwise
 	 */
 	private readSocketFileHeader(data: Buffer, stats: IFileTransfer): boolean {
 		stats.buffer = Buffer.concat(
@@ -147,8 +151,8 @@ export default class FileServer {
 	 * Finds an unused name it uses Windows convention of appending
 	 * a counter to the name example: "testFile - (1).pfd", until an unused name is found.
 	 *
-	 * @param filePath A string with the full path of the file.
-	 * @return A Promise with the new full path to use.
+	 * @param {string} filePath The full path of the file.
+	 * @returns {Promise<string>} A Promise with the new full path to use.
 	 */
 	private getUnusedName(filePath: string): Promise<string> {
 		return new Promise((resolve, reject) => {
@@ -176,7 +180,8 @@ export default class FileServer {
 	}
 
 	/**
-	 * Creates a new TCP server.
+	 * Creates a new TCP server ready to receive files.
+	 * @returns {net.Server} The created server.
 	 */
 	private createServer(): net.Server {
 		const server = net.createServer(socket => {
@@ -226,21 +231,20 @@ export default class FileServer {
 					const checksum = generateHash(data, "md5", "hex");
 
 					if (checksum === stats.header.checksum) {
-						console.log("Received file");
+						LOGGER.info("Received file");
 					} else {
-						// tslint:disable-next-line:no-console
-						console.log("File corrupted");
+						LOGGER.warn("File corrupted");
 					}
 					if (stats.writer !== null) {
 						stats.writer.end();
 						socket.end();
 					}
-					console.log("ended");
+					LOGGER.debug("Connection ended");
 				});
 			});
 		});
 
-		server.on("close", () => console.log("Server closed"));
+		server.on("close", () => LOGGER.debug("Server closed"));
 
 		return server;
 	}

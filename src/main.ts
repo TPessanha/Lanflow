@@ -1,7 +1,11 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 import * as url from "url";
-import winston from "winston";
+import Logger from "./scripts/utils/Logger";
+
+const logFolder = path.join(app.getPath("logs"));
+const LOGGER = Logger.getLogger(logFolder);
+LOGGER.info("Started");
 
 let mainWindow: BrowserWindow | null;
 
@@ -36,28 +40,6 @@ function createWindow() {
 	});
 }
 
-const logFolder = path.join(app.getPath("userData"), "..", "Lanflow", "logs");
-
-const LOGGER = winston.createLogger({
-	level: "info",
-	format: winston.format.json(),
-	transports: [
-		//
-		// - Write to all logs with level `info` and below to `combined.log`
-		// - Write all logs error (and below) to `error.log`.
-		//
-		new winston.transports.File({
-			filename: path.join(logFolder, "error.log"),
-			level: "error"
-		}),
-		new winston.transports.File({
-			filename: path.join(logFolder, "combined.log")
-		})
-	]
-});
-
-LOGGER.info("Started");
-
 app.on("ready", createWindow);
 
 app.on("window-all-closed", () => {
@@ -72,4 +54,10 @@ app.on("activate", () => {
 	if (mainWindow === null) {
 		createWindow();
 	}
+});
+
+ipcMain.on("test", (event: any) => {
+	// tslint:disable-next-line:no-console
+	LOGGER.debug("testtsdt");
+	event.returnValue = "pong";
 });

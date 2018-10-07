@@ -84,7 +84,7 @@ const webpackConfig = merge(baseConfig, {
 				{
 					"http-equiv": "Content-Security-Policy",
 					content:
-						"default-src 'none'; manifest-src 'self'; style-src 'self' data:; img-src 'self' data:; script-src 'self'; connect-src 'self'; font-src 'self' https://cdn.joinhoney.com;"
+						"default-src 'none'; manifest-src 'self'; style-src 'self' data:; img-src 'self' data:; script-src 'self'; connect-src 'self'; font-src 'self'"
 				}
 			],
 			minify: {

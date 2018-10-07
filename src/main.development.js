@@ -1,38 +1,22 @@
 const path = require("path");
 const appPaths = require("../config/appPaths");
-const winston = require("winston");
-const chalk = require("chalk");
+const Logger = require("./scripts/utils/Logger");
+const {
+	app,
+	BrowserWindow,
+	Menu,
+	shell,
+	ipcMain,
+	dialog
+} = require("electron");
 
-const { app, BrowserWindow, Menu, shell } = require("electron");
+const logFolder = path.join(app.getPath("userData"), "..", "Lanflow", "logs");
+const LOGGER = Logger.getLogger(logFolder);
+LOGGER.info("Started");
 
 let menu;
 let template;
 let mainWindow = null;
-
-const logFolder = path.join(app.getPath("userData"), "..", "Lanflow", "logs");
-
-const LOGGER = winston.createLogger({
-	level: "info",
-	format: winston.format.json(),
-	transports: [
-		//
-		// - Write to all logs with level `info` and below to `combined.log`
-		// - Write all logs error (and below) to `error.log`.
-		//
-		new winston.transports.File({
-			filename: path.join(logFolder, "error-dev.log"),
-			level: "error"
-		}),
-		new winston.transports.File({
-			filename: path.join(logFolder, "combined-dev.log")
-		}),
-		new winston.transports.Console({
-			format: winston.format.simple()
-		})
-	]
-});
-
-LOGGER.info(chalk.cyan("Starting\n"));
 
 app.on("window-all-closed", () => {
 	if (process.platform !== "darwin") app.quit();
@@ -369,3 +353,21 @@ app.on("ready", () =>
 		}
 	})
 );
+
+ipcMain.on("test", event => {
+	// eslint:disable-next-line:no-console
+	LOGGER.info("testtsdt");
+	dialog.showOpenDialog(
+		{
+			properties: ["openFile"]
+		},
+		files => {
+			if (files !== undefined) {
+				//server.sendFile("localhost", 9595, files[0]);
+				// tslint:disable-next-line:no-console
+				LOGGER.info(files);
+				event.returnValue = files[0];
+			}
+		}
+	);
+});
