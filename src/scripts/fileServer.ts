@@ -2,8 +2,8 @@ import fs from "fs";
 import net from "net";
 import path from "path";
 import { generateHash } from "./utils/cryptoUtil";
+import { getUnusedName } from "./utils/fsUtils";
 import * as Logger from "./utils/Logger";
-
 const LOGGER = Logger.getLogger();
 /**
  * Interface for a helper connection object containing information for a file transfer
@@ -30,6 +30,8 @@ interface IFileHeader {
 export default class FileServer {
 	//Vars
 	private server: net.Server;
+	private _listening: boolean;
+	private _defaultDir: string;
 
 	/**
 	 * Constructor for the FileServer class.
@@ -42,18 +44,32 @@ export default class FileServer {
 		private readonly PORT: number
 	) {
 		this.server = this.createServer();
+		this._listening = false;
+		this._defaultDir = "./";
 	}
 
 	get listening(): boolean {
-		return this.server.listening;
+		return this._listening;
+	}
+	get defaultDir(): string {
+		return this._defaultDir;
+	}
+	set defaultDir(newDefaultdir: string) {
+		if (path.isAbsolute(newDefaultdir)) {
+			this._defaultDir = newDefaultdir;
+			LOGGER.debug(`New defaultDir is: ${newDefaultdir}`);
+		} else {
+			throw new Error("New path must be absolute.");
+		}
 	}
 
 	/**
 	 * Start listening for connections
 	 */
 	public listen() {
-		LOGGER.debug("Server listening");
 		this.server.listen(this.PORT, this.HOST);
+		this._listening = true;
+		LOGGER.debug("Server listening");
 	}
 
 	/**
@@ -67,6 +83,7 @@ export default class FileServer {
 	 */
 	public close(callback?: () => void) {
 		this.server.close(callback);
+		this._listening = false;
 	}
 
 	/**
@@ -77,7 +94,12 @@ export default class FileServer {
 	 * @param {number} port The port
 	 * @param {string} filePath The path to the file
 	 */
-	public sendFile(host: string, port: number, filePath: string) {
+	public sendFile(
+		host: string,
+		port: number,
+		filePath: string,
+		callback?: () => void
+	) {
 		fs.stat(filePath, (err, stats) => {
 			if (err) {
 				throw err;
@@ -109,6 +131,9 @@ export default class FileServer {
 					readStream.pipe(client);
 					readStream.on("close", () => {
 						client.end();
+						if (callback) {
+							callback();
+						}
 					});
 				}
 			});
@@ -142,41 +167,14 @@ export default class FileServer {
 			stats.header.contentLength = json.contentLength;
 			stats.header.checksum = json.checksum;
 			stats.header.contentName = json.contentName;
+
+			stats.header.contentName = path.join(
+				this.defaultDir,
+				stats.header.contentName
+			);
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Finds an unused name it uses Windows convention of appending
-	 * a counter to the name example: "testFile - (1).pfd", until an unused name is found.
-	 *
-	 * @param {string} filePath The full path of the file.
-	 * @returns {Promise<string>} A Promise with the new full path to use.
-	 */
-	private getUnusedName(filePath: string): Promise<string> {
-		return new Promise((resolve, reject) => {
-			try {
-				const originalFilePath = filePath;
-				const fDir = path.dirname(originalFilePath);
-				const fExtension = path.extname(originalFilePath);
-				const fName = path.basename(originalFilePath, fExtension);
-
-				let counter = 1;
-				fs.readdir(fDir, (err, files) => {
-					while (files.includes(path.basename(filePath))) {
-						filePath = path.format({
-							dir: fDir,
-							name: `${fName} - (${counter++})`,
-							ext: fExtension
-						});
-					}
-					resolve(filePath);
-				});
-			} catch (error) {
-				reject(error);
-			}
-		});
 	}
 
 	/**
@@ -201,7 +199,7 @@ export default class FileServer {
 			const onData = async (data: Buffer) => {
 				if (this.readSocketFileHeader(data, stats)) {
 					try {
-						stats.header.contentName = await this.getUnusedName(
+						stats.header.contentName = await getUnusedName(
 							stats.header.contentName
 						);
 

@@ -1,10 +1,8 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import RemoteFile from "../src/components/RemoteFile";
+import Home from "../../src/components/Home";
 
 it("renders home correctly", () => {
-	const tree = renderer
-		.create(<RemoteFile />)
-		.toJSON();
+	const tree = renderer.create(<Home />).toJSON();
 	expect(tree).toMatchSnapshot();
 });

@@ -1,7 +1,7 @@
-import FileServer from "./fileTransfer";
-// import Logger from "./utils/Logger";
+import FileServer from "./fileServer";
+import * as Logger from "./utils/Logger";
 
-// const LOOGER = Logger.getLogger(null);
+const LOOGER = Logger.getLogger();
 // tslint:disable-next-line:no-console
 // console.log("Starting");
 const server = new FileServer("localhost", 9595);
@@ -13,6 +13,7 @@ const server = new FileServer("localhost", 9595);
 export function testFile() {
 	//tslint:disable-next-line:no-console
 	server.listen();
+	LOOGER.info(`Server state is: ${server.listening}`);
 	// LOOGER.info("server listening");
 	//const file = ipcRenderer.sendSync("test");
 	//server.sendFile("localhost", 9595, file);
