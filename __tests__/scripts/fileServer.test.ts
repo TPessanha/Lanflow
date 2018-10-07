@@ -34,4 +34,6 @@ test("file transfer", () => {
 		fs.unlinkSync(testFilePath2);
 		expect(fs.existsSync(testFilePath2)).toBeFalsy();
 	});
+	server.close();
+	expect(server.listening).toBeFalsy();
 });
