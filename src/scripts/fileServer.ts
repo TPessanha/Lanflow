@@ -226,7 +226,11 @@ export default class FileServer {
 
 			socket.on("end", () => {
 				fs.readFile(stats.header.contentName, (err, data) => {
-					const checksum = generateHash(data, "md5", "hex");
+					const checksum = generateHash(
+						data.toString(),
+						"md5",
+						"hex"
+					);
 
 					if (checksum === stats.header.checksum) {
 						LOGGER.info("Received file");
