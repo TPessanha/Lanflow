@@ -2,7 +2,7 @@ import fs from "fs";
 import net from "net";
 import path from "path";
 import { generateHash } from "./utils/cryptoUtil";
-import Logger from "./utils/Logger";
+import * as Logger from "./utils/Logger";
 
 const LOGGER = Logger.getLogger();
 /**

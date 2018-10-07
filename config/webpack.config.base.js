@@ -192,7 +192,7 @@ const webpackConfig = {
 		]
 	},
 	performance: {
-		hints: NODE_ENV === "production" ? "error" : false,
+		hints: NODE_ENV === "production" ? "warning" : false,
 		assetFilter: function(assetFilename) {
 			return (
 				assetFilename.endsWith(".js") || assetFilename.endsWith(".css")

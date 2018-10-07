@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 import * as url from "url";
-import Logger from "./scripts/utils/Logger";
+import * as Logger from "./scripts/utils/Logger";
 
 const logFolder = path.join(app.getPath("logs"));
 const LOGGER = Logger.getLogger(logFolder);

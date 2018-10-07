@@ -1,7 +1,8 @@
 // import winston = require("winston");
-const path = require("path");
-const remote = require("electron").remote;
-const winston = require("winston");
+import path from "path";
+import remote from "electron";
+// const winston = require("winston");
+import { File, Console, format, createLogger, addColors } from "winston";
 
 /**
  * Creates a logger and attach it to global
@@ -9,7 +10,7 @@ const winston = require("winston");
  * @param {string} logPath The path where to save the logs.
  * @returns {winston.Logger} The logger instance to be used.
  */
-function getLogger(logPath = null) {
+export function getLogger(logPath = null) {
 	if (logPath == null) {
 		return remote.getGlobal("LOGGER");
 	}
@@ -17,11 +18,11 @@ function getLogger(logPath = null) {
 	const isDev = process.env.NODE_ENV === "development";
 
 	const transports = [
-		new winston.transports.File({
+		new File({
 			filename: path.join(logPath, isDev ? "error-dev.log" : "error.log"),
 			level: "error"
 		}),
-		new winston.transports.File({
+		new File({
 			filename: path.join(
 				logPath,
 				isDev ? "combined-dev.log" : "combined.log"
@@ -31,28 +32,28 @@ function getLogger(logPath = null) {
 
 	if (isDev) {
 		transports.push(
-			new winston.transports.Console({
-				format: winston.format.combine(
-					winston.format.colorize(),
-					winston.format.timestamp({
+			new Console({
+				format: format.combine(
+					format.colorize(),
+					format.timestamp({
 						format: "YYYY-MM-DD HH:mm:ss:SSS"
 					}),
-					winston.format.simple()
+					format.simple()
 				),
 				level: "debug"
 			})
 		);
 	}
 
-	const LOGGER = winston.createLogger({
+	const LOGGER = createLogger({
 		level: "info",
-		format: winston.format.combine(
-			winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:SSS" }),
-			winston.format.json()
+		format: format.combine(
+			format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:SSS" }),
+			format.json()
 		),
 		transports
 	});
-	winston.addColors({
+	addColors({
 		error: "red",
 		warn: "yellow",
 		info: "cyan",
@@ -62,5 +63,3 @@ function getLogger(logPath = null) {
 	global.LOGGER = LOGGER;
 	return LOGGER;
 }
-
-module.exports = { getLogger };
