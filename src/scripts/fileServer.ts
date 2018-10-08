@@ -45,7 +45,7 @@ export default class FileServer {
 	) {
 		this.server = this.createServer();
 		this._listening = false;
-		this._defaultDir = "./";
+		this._defaultDir = path.normalize("./");
 	}
 
 	get listening(): boolean {
@@ -56,8 +56,8 @@ export default class FileServer {
 	}
 	set defaultDir(newDefaultdir: string) {
 		if (path.isAbsolute(newDefaultdir)) {
-			this._defaultDir = newDefaultdir;
-			LOGGER.debug(`New defaultDir is: ${newDefaultdir}`);
+			this._defaultDir = path.normalize(newDefaultdir);
+			LOGGER.debug(`New defaultDir is: ${this._defaultDir}`);
 		} else {
 			throw new Error("New path must be absolute.");
 		}

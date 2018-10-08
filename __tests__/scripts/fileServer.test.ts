@@ -21,7 +21,7 @@ test("file transfer", () => {
 	);
 	expect(fs.existsSync(testFilePath)).toBeTruthy();
 	expect(fs.existsSync(testFilePath2)).toBeFalsy();
-	expect(server.defaultDir).toBe("./");
+	expect(server.defaultDir).toBe(path.normalize("./"));
 	const testDirPath = path.join(
 		appPaths.appDirectory,
 		"__tests__",

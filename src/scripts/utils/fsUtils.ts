@@ -11,18 +11,15 @@ import path from "path";
 export function getUnusedName(filePath: string): Promise<string> {
 	return new Promise((resolve, reject) => {
 		try {
-			const originalFilePath = filePath;
-			const fDir = path.dirname(originalFilePath);
-			const fExtension = path.extname(originalFilePath);
-			const fName = path.basename(originalFilePath, fExtension);
+			const originalFilePath = path.parse(filePath);
 
 			let counter = 1;
-			fs.readdir(fDir, (err, files) => {
+			fs.readdir(originalFilePath.dir, (err, files) => {
 				while (files.includes(path.basename(filePath))) {
 					filePath = path.format({
-						dir: fDir,
-						name: `${fName} - (${counter++})`,
-						ext: fExtension
+						dir: originalFilePath.dir,
+						name: `${originalFilePath.name} - (${counter++})`,
+						ext: originalFilePath.ext
 					});
 				}
 				resolve(filePath);
