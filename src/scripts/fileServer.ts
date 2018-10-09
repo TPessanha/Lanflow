@@ -33,20 +33,16 @@ interface IFileServerOptions {
  */
 export default class FileServer extends net.Server {
 	private options: IFileServerOptions = {
-		defaultDir: path.resolve(
-			fs.realpathSync(process.cwd()),
-			"__tests__",
-			"_testResources"
-		)
+		defaultDir: path.normalize("./") //TODO get this form settings
 	};
 
 	constructor(
-		connectionListener?: (socket: net.Socket) => void,
 		options?: {
 			allowHalfOpen?: boolean;
 			pauseOnConnect?: boolean;
 			defaultDir?: string;
-		}
+		},
+		connectionListener?: (socket: net.Socket) => void
 	) {
 		super(options, connectionListener);
 		if (options && options.defaultDir) {

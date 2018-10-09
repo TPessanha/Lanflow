@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import FileServer from "./fileServer";
 import * as Logger from "./utils/Logger";
 
@@ -5,7 +7,7 @@ const LOOGER = Logger.getLogger();
 const server = new FileServer();
 // tslint:disable-next-line:no-console
 // console.log("Starting");
-testFile();
+//testFile();
 // tslint:disable-next-line:no-console
 // console.log("Created");
 // tslint:disable-next-line:no-console
@@ -23,7 +25,10 @@ export function testFile() {
 	server.sendFile(
 		"localhost",
 		9595,
-		`${process.cwd()}/__tests__/_testResources/testFile.txt`
+		path.resolve(
+			fs.realpathSync(process.cwd()),
+			"/__tests__/_testResources/testFile.txt"
+		)
 	);
 	//console.log(ipcRenderer.sendSync("open-file", "ping"));
 	// remote.dialog.showOpenDialog(

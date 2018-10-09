@@ -30,9 +30,8 @@ test("file transfer", () => {
 		"testFile - (1).txt"
 	);
 	const dirPath = path.dirname(testFilePath);
-	const server = new FileServer(undefined, {
-		defaultDir: dirPath
-	});
+	const server = new FileServer();
+	server.defaultDir = dirPath;
 
 	expect(fs.existsSync(testFilePath)).toBeTruthy();
 	expect(server.defaultDir).toBe(dirPath);
