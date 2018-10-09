@@ -22,70 +22,50 @@ interface IFileHeader {
 	contentLength: number;
 	contentName: string;
 }
+
+interface IFileServerOptions {
+	defaultDir: string;
+}
 /**
  * File transfer implementation server and client,
  * To use create a new FileServer and run listening if you want to receive,
  * use the sendFile if you want to send.
  */
-export default class FileServer {
-	//Vars
-	private server: net.Server;
-	private _listening: boolean;
-	private _defaultDir: string;
+export default class FileServer extends net.Server {
+	private options: IFileServerOptions = {
+		defaultDir: path.resolve(
+			fs.realpathSync(process.cwd()),
+			"__tests__",
+			"_testResources"
+		)
+	};
 
-	/**
-	 * Constructor for the FileServer class.
-	 *
-	 * @param {string} HOST The host to listen on.
-	 * @param {number} PORT The port to listen on.
-	 */
-	public constructor(
-		private readonly HOST: string,
-		private readonly PORT: number
+	constructor(
+		connectionListener?: (socket: net.Socket) => void,
+		options?: {
+			allowHalfOpen?: boolean;
+			pauseOnConnect?: boolean;
+			defaultDir?: string;
+		}
 	) {
-		this.server = this.createServer();
-		this._listening = false;
-		this._defaultDir = path.normalize("./");
+		super(options, connectionListener);
+		if (options && options.defaultDir) {
+			this.options.defaultDir = options.defaultDir;
+		}
+		this.setupFileServer();
 	}
 
-	get listening(): boolean {
-		return this._listening;
-	}
 	get defaultDir(): string {
-		return this._defaultDir;
+		return this.options.defaultDir;
 	}
 	set defaultDir(newDefaultdir: string) {
 		if (path.isAbsolute(newDefaultdir)) {
-			this._defaultDir = path.normalize(newDefaultdir);
-			LOGGER.debug(`New defaultDir is: ${this._defaultDir}`);
+			this.options.defaultDir = path.normalize(newDefaultdir);
+			LOGGER.debug(`New defaultDir is: ${this.options.defaultDir}`);
 		} else {
 			throw new Error("New path must be absolute.");
 		}
 	}
-
-	/**
-	 * Start listening for connections
-	 */
-	public listen() {
-		this.server.listen(this.PORT, this.HOST);
-		this._listening = true;
-		LOGGER.debug("Server listening");
-	}
-
-	/**
-	 * Stops the server from accepting new connections and keeps existing
-	 * connections. This function is asynchronous, the server is finally
-	 * closed when all connections are ended and the server emits a 'close' event.
-	 *
-	 * The optional callback will be called once the 'close' event occurs.
-	 *
-	 * @param {Function} callback Called when the server is closed
-	 */
-	public close(callback?: () => void) {
-		this.server.close(callback);
-		this._listening = false;
-	}
-
 	/**
 	 * Sends a file located at 'filePath' to using 'host:port'.
 	 * The server doesn't need to be listenning to send files.
@@ -129,7 +109,7 @@ export default class FileServer {
 				if (data[0] === 0) {
 					const readStream = fs.createReadStream(filePath);
 					readStream.pipe(client);
-					readStream.on("close", () => {
+					readStream.on("end", () => {
 						client.end();
 						if (callback) {
 							callback();
@@ -141,6 +121,89 @@ export default class FileServer {
 				LOGGER.info("disconnected from server");
 			});
 		});
+	}
+
+	/**
+	 * Adds the needed listeners for a new TCP server ready to receive files.
+	 */
+	private setupFileServer() {
+		this.on("connection", socket => {
+			//let isPiped = false;
+
+			const stats: IFileTransfer = {
+				buffer: Buffer.alloc(0),
+				header: {
+					checksum: "0",
+					contentLength: 0,
+					contentName: ""
+				},
+				reader: null,
+				writer: null
+			};
+
+			const onData = async (data: Buffer) => {
+				LOGGER.debug("Data received");
+				if (this.readSocketFileHeader(data, stats)) {
+					try {
+						stats.header.contentName = await getUnusedName(
+							stats.header.contentName,
+							this.options.defaultDir
+						);
+
+						fs.open(stats.header.contentName, "ax", (err, fd) => {
+							if (err) {
+								socket.write(new Buffer([1]));
+								throw err;
+							}
+							stats.writer = fs.createWriteStream("", {
+								fd
+							});
+
+							LOGGER.debug(
+								"Pipe the incoming file to streamWriter"
+							);
+							// tslint:disable-next-line:no-console
+							console.log("sdgsd");
+							socket.pipe(stats.writer);
+							socket.removeListener("data", onData);
+							socket.write(new Buffer([0]));
+						});
+					} catch (error) {
+						throw error;
+					}
+				}
+			};
+
+			socket.on("data", onData);
+
+			socket.on("end", () => {
+				// tslint:disable-next-line:no-console
+				console.log("sdgsd");
+				LOGGER.debug(
+					`Check if file is received file: ${
+						stats.header.contentName
+					}`
+				);
+				const exits = fs.existsSync(stats.header.contentName);
+				LOGGER.debug(`Does the file exist: ${String(exits)}`);
+				fs.readFile(stats.header.contentName, (err, data) => {
+					const checksum = generateHash(data, "md5", "hex");
+
+					if (checksum === stats.header.checksum) {
+						LOGGER.info("Received file");
+					} else {
+						LOGGER.warn("File corrupted");
+					}
+					if (stats.writer !== null) {
+						stats.writer.end();
+						stats.writer.close();
+					}
+					LOGGER.debug("Connection ended");
+				});
+			});
+		});
+
+		this.on("close", () => LOGGER.debug("Server closed"));
 	}
 
 	/**
@@ -169,85 +232,11 @@ export default class FileServer {
 			stats.header.contentName = json.contentName;
 
 			stats.header.contentName = path.join(
-				this.defaultDir,
+				this.options.defaultDir,
 				stats.header.contentName
 			);
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Creates a new TCP server ready to receive files.
-	 * @returns {net.Server} The created server.
-	 */
-	private createServer(): net.Server {
-		const server = net.createServer(socket => {
-			//let isPiped = false;
-
-			const stats: IFileTransfer = {
-				buffer: Buffer.alloc(0),
-				header: {
-					checksum: "0",
-					contentLength: 0,
-					contentName: ""
-				},
-				reader: null,
-				writer: null
-			};
-
-			const onData = async (data: Buffer) => {
-				if (this.readSocketFileHeader(data, stats)) {
-					try {
-						stats.header.contentName = await getUnusedName(
-							stats.header.contentName
-						);
-
-						fs.open(stats.header.contentName, "ax", (err, fd) => {
-							if (err) {
-								socket.write(new Buffer([1]));
-								throw err;
-							}
-							stats.writer = fs.createWriteStream("", {
-								fd
-							});
-
-							socket.pipe(stats.writer);
-							socket.removeListener("data", onData);
-							socket.write(new Buffer([0]));
-						});
-					} catch (error) {
-						throw error;
-					}
-				}
-			};
-
-			socket.on("data", onData);
-
-			socket.on("end", () => {
-				fs.readFile(stats.header.contentName, (err, data) => {
-					const checksum = generateHash(
-						data.toString(),
-						"md5",
-						"hex"
-					);
-
-					if (checksum === stats.header.checksum) {
-						LOGGER.info("Received file");
-					} else {
-						LOGGER.warn("File corrupted");
-					}
-					if (stats.writer !== null) {
-						stats.writer.end();
-						socket.end();
-					}
-					LOGGER.debug("Connection ended");
-				});
-			});
-		});
-
-		server.on("close", () => LOGGER.debug("Server closed"));
-
-		return server;
 	}
 }

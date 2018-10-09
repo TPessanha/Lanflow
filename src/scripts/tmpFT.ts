@@ -2,9 +2,10 @@ import FileServer from "./fileServer";
 import * as Logger from "./utils/Logger";
 
 const LOOGER = Logger.getLogger();
+const server = new FileServer();
 // tslint:disable-next-line:no-console
 // console.log("Starting");
-const server = new FileServer("localhost", 9595);
+testFile();
 // tslint:disable-next-line:no-console
 // console.log("Created");
 // tslint:disable-next-line:no-console
@@ -12,11 +13,19 @@ const server = new FileServer("localhost", 9595);
 
 export function testFile() {
 	//tslint:disable-next-line:no-console
-	server.listen();
 	LOOGER.info(`Server state is: ${server.listening}`);
+	if (server.listening) {
+		LOOGER.warn(`Server listen was called more than once without closing.`);
+	} else {
+		server.listen(9595, "localhost");
+	}
 	// LOOGER.info("server listening");
-	//const file = ipcRenderer.sendSync("test");
-	//server.sendFile("localhost", 9595, file);
+	server.defaultDir = `C:\\Users\\Tomas-PC\\Documents\\Projects\\Electron\\Lanflow\\__tests__\\_testResources`;
+	server.sendFile(
+		"localhost",
+		9595,
+		`C:\\Users\\Tomas-PC\\Documents\\Projects\\Electron\\Lanflow\\__tests__\\_testResources\\testFile.txt`
+	);
 	//console.log(ipcRenderer.sendSync("open-file", "ping"));
 	// remote.dialog.showOpenDialog(
 	// 	{

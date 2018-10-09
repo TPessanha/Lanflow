@@ -12,6 +12,9 @@ const out = {
 	 */
 	getLogger: (logPath = null) => {
 		if (logPath == null) {
+			if (remote === undefined) {
+				return console;
+			}
 			return remote.getGlobal("LOGGER");
 		}
 
