@@ -152,7 +152,7 @@ export default class FileServer extends net.Server {
 
 						fs.open(stats.header.contentName, "ax", (err, fd) => {
 							if (err) {
-								socket.write(new Buffer([1]));
+								socket.write(Buffer.from([1]));
 								throw err;
 							}
 							stats.writer = fs.createWriteStream("", {
@@ -166,7 +166,7 @@ export default class FileServer extends net.Server {
 							console.log("sdgsd");
 							socket.pipe(stats.writer);
 							socket.removeListener("data", onData);
-							socket.write(new Buffer([0]));
+							socket.write(Buffer.from([0]));
 						});
 					} catch (error) {
 						throw error;
