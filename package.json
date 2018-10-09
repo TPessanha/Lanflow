@@ -38,7 +38,7 @@
     "package:win": "npm run build && build --win --x64",
     "package:linux": "npm run build && build --linux",
     "package:all": "npm run build && build -mwl",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test:cover": "jest --coverage",
     "test:snapshot": "jest --updateSnapshot",
     "generate:dts": "sass-dts ./src",
