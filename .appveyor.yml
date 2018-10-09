@@ -5,7 +5,7 @@ branches:
 cache:
   - node_modules
 environment:
-  nodejs_version: "10"
+  nodejs_version: "8"
   GH_TOKEN:
     secure: 7j9inLXDdffvDiVyuAULG4o1RZnASQb/Qfb3x3C7/5TPdYWvCcDXFN3mof/wpe2l
 

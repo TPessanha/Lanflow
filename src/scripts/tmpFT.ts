@@ -1,4 +1,3 @@
-import fs from "fs";
 import path from "path";
 import FileServer from "./fileServer";
 import * as Logger from "./utils/Logger";
@@ -18,18 +17,23 @@ export function testFile() {
 	LOOGER.info(`Server state is: ${server.listening}`);
 	if (server.listening) {
 		LOOGER.warn(`Server listen was called more than once without closing.`);
+		server.sendFile(
+			"localhost",
+			9595,
+			path.resolve("./__tests__/_testResources/testFile.txt")
+		);
 	} else {
-		server.listen(9595, "localhost");
+		server.defaultDir = path.resolve("./__tests__/_testResources");
+		server.listen(9595, "localhost", undefined, () => {
+			server.sendFile(
+				"localhost",
+				9595,
+				path.resolve("./__tests__/_testResources/testFile.txt")
+			);
+		});
 	}
 	// LOOGER.info("server listening");
-	server.sendFile(
-		"localhost",
-		9595,
-		path.resolve(
-			fs.realpathSync(process.cwd()),
-			"/__tests__/_testResources/testFile.txt"
-		)
-	);
+
 	//console.log(ipcRenderer.sendSync("open-file", "ping"));
 	// remote.dialog.showOpenDialog(
 	// 	{
