@@ -13,6 +13,12 @@
 	padding-right: 20px;
 }
 
+:local(.pageContainer) {
+	height: "100%";
+	width: "100%";
+	display: "flex"
+}
+
 html {
 	height: 100%;
 	font-family: "BlinkMacSystemFont", "Lucida Grande", "Segoe UI", Ubuntu,
