@@ -20,11 +20,10 @@ export function testFile() {
 		server.listen(9595, "localhost");
 	}
 	// LOOGER.info("server listening");
-	server.defaultDir = `C:\\Users\\Tomas-PC\\Documents\\Projects\\Electron\\Lanflow\\__tests__\\_testResources`;
 	server.sendFile(
 		"localhost",
 		9595,
-		`C:\\Users\\Tomas-PC\\Documents\\Projects\\Electron\\Lanflow\\__tests__\\_testResources\\testFile.txt`
+		`${process.cwd()}/__tests__/_testResources/testFile.txt`
 	);
 	//console.log(ipcRenderer.sendSync("open-file", "ping"));
 	// remote.dialog.showOpenDialog(
