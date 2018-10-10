@@ -1,5 +1,5 @@
-cache:
-  - node_modules
+#cache:
+#  - node_modules
 environment:
   nodejs_version: "10"
   GH_TOKEN:
