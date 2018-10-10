@@ -3,7 +3,7 @@ branches:
     - master
 
 cache:
-  - node_modules
+  #- node_modules
 environment:
   nodejs_version: "10"
   GH_TOKEN:
