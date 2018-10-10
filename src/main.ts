@@ -19,6 +19,13 @@ function createWindow() {
 			devTools: false
 		}
 	});
+	mainWindow.once("ready-to-show", () => {
+		if (!mainWindow) {
+			throw new Error('"mainWindow" is not defined');
+		}
+		mainWindow.show();
+		mainWindow.focus();
+	});
 
 	const indexPath = url.format({
 		pathname: path.join(__dirname, "index.html"),
@@ -26,14 +33,6 @@ function createWindow() {
 		slashes: true
 	});
 	mainWindow.loadURL(indexPath);
-
-	mainWindow.webContents.on("did-finish-load", () => {
-		if (!mainWindow) {
-			throw new Error('"mainWindow" is not defined');
-		}
-		mainWindow.show();
-		mainWindow.focus();
-	});
 
 	mainWindow.on("closed", () => {
 		mainWindow = null;

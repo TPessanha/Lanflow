@@ -44,9 +44,13 @@ app.on("window-all-closed", () => {
 app.on("ready", () =>
 	installExtensions().then(() => {
 		mainWindow = new BrowserWindow({
+			show: false,
 			width: 1024,
 			height: 728,
 			icon: path.join(appPaths.appResources, "build", "favicon.ico")
+		});
+		mainWindow.once("ready-to-show", () => {
+			mainWindow.show();
 		});
 		const PORT = parseInt(process.env.PORT, 10) || 3000;
 		mainWindow.loadURL(`http://localhost:${PORT}`);

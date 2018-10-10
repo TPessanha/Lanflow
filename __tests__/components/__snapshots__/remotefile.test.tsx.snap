@@ -8,7 +8,12 @@ exports[`renders home correctly 1`] = `
   <button
     onClick={[Function]}
   >
-    Click me
+    Send file
+  </button>
+  <button
+    onClick={[Function]}
+  >
+    Close server
   </button>
   <p>
     Lorem ipsum dolor sit amet, tellus fringilla vitae, erat odio sapien donec ut nibh purus. Arcu purus vel mi eu, nunc sed id quis. Erat vitae, dis erat malesuada sed a, proin pulvinar. Tempor in quam amet wisi ante, sed sagittis sed, varius cursus facilisi ipsum elit, elit eu in praesent magna. Ac dolor etiam, eros consectetuer suspendisse amet, sit ac rutrum. Tristique porta turpis nunc, amet mauris a proin sodales, ut dictum. At ut dui id mauris, sem aenean est, lobortis nibh sed a integer mauris magna, habitant id gravida. Libero amet vel, tincidunt praesent pulvinar. Et id, commodo eu tellus vitae nunc ac, vel quisque urna eu ante lectus morbi. Sollicitudin pellentesque lacus amet dolor aliquam. In non habitasse, maecenas arcu tincidunt nostra id felis egestas, in ut donec turpis sodales urna erat. Sodales sint lorem eget at tincidunt, mauris sodales, mauris et vel suspendisse at nec.
