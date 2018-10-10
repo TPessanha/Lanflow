@@ -57,7 +57,7 @@ export default class FileServer extends net.Server {
 	set defaultDir(newDefaultdir: string) {
 		if (path.isAbsolute(newDefaultdir)) {
 			this.options.defaultDir = path.normalize(newDefaultdir);
-			LOGGER.debug(`New defaultDir is: ${this.options.defaultDir}`);
+			LOGGER.info(`New defaultDir is: ${this.options.defaultDir}`);
 		} else {
 			throw new Error("New path must be absolute.");
 		}
@@ -103,6 +103,7 @@ export default class FileServer extends net.Server {
 			client.on("data", data => {
 				LOGGER.debug(data.toString());
 				if (data[0] === 0) {
+					LOGGER.debug("Client - Ack received start streaming file");
 					const readStream = fs.createReadStream(filePath);
 					readStream.pipe(client);
 					readStream.on("end", () => {
@@ -114,7 +115,7 @@ export default class FileServer extends net.Server {
 				}
 			});
 			client.on("end", () => {
-				LOGGER.info("disconnected from server");
+				LOGGER.info("Client - Disconnected from server");
 			});
 		});
 	}
@@ -138,7 +139,7 @@ export default class FileServer extends net.Server {
 			};
 
 			const onData = async (data: Buffer) => {
-				LOGGER.debug("Data received");
+				LOGGER.debug("Server - Header data received");
 				if (this.readSocketFileHeader(data, stats)) {
 					try {
 						stats.header.contentName = await getUnusedName(
@@ -156,10 +157,8 @@ export default class FileServer extends net.Server {
 							});
 
 							LOGGER.debug(
-								"Pipe the incoming file to streamWriter"
+								"Server - Pipe the incoming file to streamWriter"
 							);
-							// tslint:disable-next-line:no-console
-							console.log("sdgsd");
 							socket.pipe(stats.writer);
 							socket.removeListener("data", onData);
 							socket.write(Buffer.from([0]));
@@ -173,33 +172,34 @@ export default class FileServer extends net.Server {
 			socket.on("data", onData);
 
 			socket.on("end", () => {
-				// tslint:disable-next-line:no-console
-				console.log("sdgsd");
-				LOGGER.debug(
-					`Check if file is received file: ${
-						stats.header.contentName
-					}`
-				);
 				const exits = fs.existsSync(stats.header.contentName);
-				LOGGER.debug(`Does the file exist: ${String(exits)}`);
+				LOGGER.debug(`Server - Received file: ${String(exits)}`);
 				fs.readFile(stats.header.contentName, (err, data) => {
 					const checksum = generateHash(data, "md5", "hex");
 
 					if (checksum === stats.header.checksum) {
-						LOGGER.info("Received file");
+						LOGGER.info(
+							`Server - File integrety check passed: ${
+								stats.header.contentName
+							}`
+						);
 					} else {
-						LOGGER.warn("File corrupted");
+						LOGGER.warn(
+							`Server - File corrupted: ${
+								stats.header.contentName
+							}`
+						);
 					}
 					if (stats.writer !== null) {
 						stats.writer.end();
 						stats.writer.close();
 					}
-					LOGGER.debug("Connection ended");
+					LOGGER.info("Server - Connection ended");
 				});
 			});
 		});
 
-		this.on("close", () => LOGGER.debug("Server closed"));
+		this.on("close", () => LOGGER.debug("Server - Server closed"));
 	}
 
 	/**

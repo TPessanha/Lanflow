@@ -1,4 +1,4 @@
-import path from "path";
+import { ipcRenderer } from "electron";
 import FileServer from "./fileServer";
 import * as Logger from "./utils/Logger";
 
@@ -11,26 +11,17 @@ const server = new FileServer();
 // console.log("Created");
 // tslint:disable-next-line:no-console
 //console.log("listening");
+export function closeServer() {
+	server.close();
+}
 
 export function testFile() {
 	//tslint:disable-next-line:no-console
-	LOOGER.info(`Server state is: ${server.listening}`);
+	LOOGER.info(`Server runing: ${server.listening}`);
 	if (server.listening) {
-		LOOGER.warn(`Server listen was called more than once without closing.`);
-		server.sendFile(
-			"localhost",
-			9595,
-			path.resolve("./__tests__/_testResources/testFile.txt")
-		);
+		sendFile();
 	} else {
-		server.defaultDir = path.resolve("./__tests__/_testResources");
-		server.listen(9595, "localhost", undefined, () => {
-			server.sendFile(
-				"localhost",
-				9595,
-				path.resolve("./__tests__/_testResources/testFile.txt")
-			);
-		});
+		server.listen(9595, "localhost");
 	}
 	// LOOGER.info("server listening");
 
@@ -47,4 +38,12 @@ export function testFile() {
 	// 		}
 	// 	}
 	// );
+}
+
+function sendFile() {
+	const pathToFile = ipcRenderer.sendSync("test");
+	LOOGER.debug(`Trying to send: ${pathToFile}`);
+	if (pathToFile != null) {
+		server.sendFile("localhost", 9595, pathToFile);
+	}
 }

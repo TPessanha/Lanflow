@@ -4,12 +4,7 @@ import appPaths from "../../config/appPaths";
 import FileServer from "../../src/scripts/fileServer";
 
 test("tmpTestToFixAppveyor", () => {
-	const testFilePath = path.join(
-		appPaths.appDirectory,
-		"__tests__",
-		"_testResources",
-		"testFile.txt"
-	);
+	const testFilePath = appPaths.appTestFile;
 	expect(fs.existsSync(testFilePath)).toBeTruthy();
 	fs.readFile(testFilePath, (err, data) => {
 		expect(data.length).toBeGreaterThan(2);
@@ -17,24 +12,17 @@ test("tmpTestToFixAppveyor", () => {
 });
 
 test("file transfer", () => {
-	const testFilePath = path.join(
-		appPaths.appDirectory,
-		"__tests__",
-		"_testResources",
-		"testFile.txt"
-	);
+	const testFilePath = appPaths.appTestFile;
+
 	const testFilePath2 = path.join(
-		appPaths.appDirectory,
-		"__tests__",
-		"_testResources",
+		appPaths.appTestResources,
 		"testFile - (1).txt"
 	);
-	const dirPath = path.dirname(testFilePath);
 	const server = new FileServer();
-	server.defaultDir = dirPath;
+	server.defaultDir = appPaths.appTestResources;
 
 	expect(fs.existsSync(testFilePath)).toBeTruthy();
-	expect(server.defaultDir).toBe(dirPath);
+	expect(server.defaultDir).toBe(appPaths.appTestResources);
 
 	server.listen(9393, "localhost", () => {
 		server.sendFile("localhost", 9393, testFilePath, () => {

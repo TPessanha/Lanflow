@@ -1,12 +1,13 @@
 import React from "react";
-import { testFile } from "../scripts/tmpFT";
+import { closeServer, testFile } from "../scripts/tmpFT";
 
 export default class RemoteFile extends React.Component {
 	public render() {
 		return (
 			<div>
 				<h1>File sharing page.</h1>
-				<button onClick={testFile}>Click me</button>
+				<button onClick={testFile}>Send file</button>
+				<button onClick={closeServer}>Close server</button>
 				<p>
 					Lorem ipsum dolor sit amet, tellus fringilla vitae, erat
 					odio sapien donec ut nibh purus. Arcu purus vel mi eu, nunc

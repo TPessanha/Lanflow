@@ -356,7 +356,7 @@ app.on("ready", () =>
 
 ipcMain.on("test", event => {
 	// eslint:disable-next-line:no-console
-	LOGGER.info("testtsdt");
+	LOGGER.debug("Open dialog in main process");
 	dialog.showOpenDialog(
 		{
 			properties: ["openFile"]
@@ -367,6 +367,8 @@ ipcMain.on("test", event => {
 				// tslint:disable-next-line:no-console
 				LOGGER.info(files);
 				event.returnValue = files[0];
+			} else {
+				event.returnValue = null;
 			}
 		}
 	);
