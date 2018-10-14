@@ -1,5 +1,5 @@
-#cache:
-#  - node_modules
+cache:
+  - node_modules
 environment:
   nodejs_version: "10"
   GH_TOKEN:
@@ -11,6 +11,7 @@ install:
   - ps: Install-Product node $env:nodejs_version
   # install modules
   - npm install
+  - npm rebuild node-sass
 
 # Post-install test scripts.
 test_script:

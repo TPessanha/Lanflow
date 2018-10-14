@@ -1,8 +1,8 @@
-import { ipcRenderer } from "electron";
+import { remote } from "electron";
 import FileServer from "./fileServer";
 import * as Logger from "./utils/Logger";
 
-const LOOGER = Logger.getLogger();
+const LOGGER = Logger.getLogger();
 const server = new FileServer();
 // tslint:disable-next-line:no-console
 // console.log("Starting");
@@ -17,7 +17,7 @@ export function closeServer() {
 
 export function testFile() {
 	//tslint:disable-next-line:no-console
-	LOOGER.info(`Server runing: ${server.listening}`);
+	LOGGER.info(`Server runing: ${server.listening}`);
 	if (server.listening) {
 		sendFile();
 	} else {
@@ -41,9 +41,18 @@ export function testFile() {
 }
 
 function sendFile() {
-	const pathToFile = ipcRenderer.sendSync("test");
-	LOOGER.debug(`Trying to send: ${pathToFile}`);
-	if (pathToFile != null) {
-		server.sendFile("localhost", 9595, pathToFile);
-	}
+	LOGGER.debug("Open dialog in main process");
+	remote.dialog.showOpenDialog(
+		{
+			properties: ["openFile"]
+		},
+		files => {
+			if (files !== undefined) {
+				LOGGER.info(`Send: ${files}`);
+				server.sendFile("localhost", 9595, files[0]);
+			} else {
+				LOGGER.debug(`Canceled file transfer`);
+			}
+		}
+	);
 }

@@ -1,14 +1,7 @@
 const path = require("path");
 const appPaths = require("../config/appPaths");
 const Logger = require("./scripts/utils/Logger");
-const {
-	app,
-	BrowserWindow,
-	Menu,
-	shell,
-	ipcMain,
-	dialog
-} = require("electron");
+const { app, BrowserWindow, Menu, shell } = require("electron");
 
 const logFolder = path.join(app.getPath("userData"), "..", "Lanflow", "logs");
 const LOGGER = Logger.getLogger(logFolder);
@@ -357,23 +350,3 @@ app.on("ready", () =>
 		}
 	})
 );
-
-ipcMain.on("test", event => {
-	// eslint:disable-next-line:no-console
-	LOGGER.debug("Open dialog in main process");
-	dialog.showOpenDialog(
-		{
-			properties: ["openFile"]
-		},
-		files => {
-			if (files !== undefined) {
-				//server.sendFile("localhost", 9595, files[0]);
-				// tslint:disable-next-line:no-console
-				LOGGER.info(files);
-				event.returnValue = files[0];
-			} else {
-				event.returnValue = null;
-			}
-		}
-	);
-});
