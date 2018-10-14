@@ -6,3 +6,4 @@ export const sideNavItemIcon: string;
 export const notificationBadge: string;
 export const sideNavSeparator: string;
 export const sideNavItem: string;
+export const selectedSideNavItem: string;
