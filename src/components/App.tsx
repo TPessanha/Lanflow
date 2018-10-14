@@ -10,7 +10,20 @@ import SideNavigation from "./SideBar/SideNavigation";
 import NotificationIcon from "../assets/img/notification.svg";
 import SideNavigationItem from "./SideBar/SideNavigationItem";
 
-export default class App extends React.Component {
+interface IAppState {
+	selectedItem: string;
+	isExpanded: boolean;
+}
+
+export default class App extends React.Component<{}, IAppState> {
+	constructor(props: Readonly<{}>){
+		super(props);
+		this.state = {
+			selectedItem: "/",
+			isExpanded: true
+		};
+	}
+
 	public title() {
 		return (
 			<div>
