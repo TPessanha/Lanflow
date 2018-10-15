@@ -1,11 +1,11 @@
-:local(.sideBar) {
-    display: inline-block;
-    height: 100%;
+.sideBar {
+	display: inline-block;
+	height: 100%;
 }
 
-:local(.content) {
-    display: inline-block;
-    height: 100%;
+.content {
+	display: inline-block;
+	height: 100%;
 	width: 100%;
 	overflow: auto;
 	padding-top: 40px;
@@ -13,10 +13,10 @@
 	padding-right: 20px;
 }
 
-:local(.pageContainer) {
+.pageContainer {
 	height: "100%";
 	width: "100%";
-	display: "flex"
+	display: "flex";
 }
 
 html {
