@@ -23,7 +23,7 @@
     "url": "https://github.com/TPessanha/Lanflow"
   },
   "scripts": {
-    "build": "npm-run-all --parallel clean build:main build:renderer",
+    "build": "npm-run-all --parallel generate:dts clean build:main build:renderer",
     "build:main": "cross-env NODE_ENV=production webpack --config config/webpack.config.electron.js --profile --colors --buildSpeedReport",
     "build:renderer": "cross-env NODE_ENV=production webpack --config config/webpack.config.production.js --profile --colors --buildSpeedReport",
     "build:web": "npm run clean && cross-env NODE_ENV=production webpack --config config/webpack.config.production.web.js --profile --colors --buildSpeedReport",
@@ -41,7 +41,7 @@
     "test": "jest --detectOpenHandles",
     "test:cover": "jest --coverage",
     "test:snapshot": "jest --updateSnapshot",
-    "generate:dts": "sass-dts ./src",
+    "generate:dts": "node scripts/generateDTS.js",
     "lint": "npm-run-all --parallel lint:*",
     "lint:eslint": "eslint src/**/*.js*",
     "lint:tslint": "tslint -c tslint.json 'src/**/*.ts*'",
@@ -167,7 +167,6 @@
     "redux-devtools": "^3.4.1",
     "rimraf": "^2.6.2",
     "sass-loader": "^7.1.0",
-    "sass-to-dts": "^0.2.2",
     "source-map-loader": "^0.2.4",
     "speed-measure-webpack-plugin": "^1.2.3",
     "style-loader": "^0.23.0",
@@ -178,6 +177,7 @@
     "tslint-config-prettier": "^1.15.0",
     "tslint-loader": "^3.6.0",
     "tslint-react": "^3.6.0",
+    "typed-css-modules": "^0.3.6",
     "typescript": "^3.1.1",
     "url-loader": "^1.1.1",
     "webpack": "^4.20.2",

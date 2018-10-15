@@ -144,11 +144,13 @@ const webpackConfig = {
 							{
 								loader: require.resolve("css-loader"),
 								options: {
+									modules: true,
 									minimize:
 										NODE_ENV === "production"
 											? true
 											: false,
-									sourceMap: true
+									sourceMap: true,
+									importLoaders: 2
 								}
 							},
 							{
