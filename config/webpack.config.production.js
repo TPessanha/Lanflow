@@ -46,7 +46,7 @@ const webpackConfig = merge(baseConfig, {
 		splitChunks: {
 			chunks: "all",
 			minSize: 30000,
-			maxSize: 140000,
+			maxSize: 220000,
 			minChunks: 1,
 			maxAsyncRequests: 5,
 			maxInitialRequests: 3,
@@ -66,6 +66,34 @@ const webpackConfig = merge(baseConfig, {
 		},
 		minimizer: [
 			new UglifyJSPlugin({
+				uglifyOptions: {
+					parse: {
+						// we want uglify-js to parse ecma 8 code. However we want it to output
+						// ecma 5 compliant code, to avoid issues with older browsers, this is
+						// whey we put `ecma: 5` to the compress and output section
+						// https://github.com/facebook/create-react-app/pull/4234
+						ecma: 8
+					},
+					compress: {
+						ecma: 5,
+						warnings: false,
+						// Disabled because of an issue with Uglify breaking seemingly valid code:
+						// https://github.com/facebook/create-react-app/issues/2376
+						// Pending further investigation:
+						// https://github.com/mishoo/UglifyJS2/issues/2011
+						comparisons: false
+					},
+					mangle: {
+						safari10: true
+					},
+					output: {
+						ecma: 5,
+						comments: false,
+						// Turned on because emoji and regex is not minified properly using default
+						// https://github.com/facebook/create-react-app/issues/2488
+						ascii_only: true
+					}
+				},
 				parallel: true,
 				sourceMap: true,
 				cache: true
