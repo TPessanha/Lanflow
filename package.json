@@ -201,5 +201,8 @@
   },
   "engines": {
     "node": "10.11.0"
-  }
+  },
+  "browserslist": [
+    "Chrome >= 66"
+  ]
 }

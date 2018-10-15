@@ -150,7 +150,11 @@ const webpackConfig = {
 											? true
 											: false,
 									sourceMap: true,
-									importLoaders: 2
+									importLoaders: 2,
+									localIdentName:
+										NODE_ENV === "production"
+											? "[hash:base64]"
+											: "[name]__[local]--[hash:base64:5]"
 								}
 							},
 							{
