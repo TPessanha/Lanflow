@@ -1,5 +1,4 @@
 import React from "react";
-//import * as style from "../styles/HomeStyle.scss";
 
 // 'IHomeProps' describes the shape of props.
 // State is never set so we use the '{}' type.

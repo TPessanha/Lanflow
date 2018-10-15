@@ -1,10 +1,13 @@
+@import "../../styles/mixins";
+@import "../../styles/variables";
+
 .sideNav {
 	width: 360px;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	color: hsl(0, 0%, 22%);
-	border-right: 1px solid hsl(0, 0%, 88%);
+	border-right: 1px solid $light-grey;
 	background-color: hsl(0, 0%, 96%);
 	display: inline-block;
 }
@@ -40,8 +43,8 @@
 
 .notificationBadge {
 	background: hsl(8, 59%, 51%);
-	border: 0.7px solid hsl(0, 0%, 88%);
-	color: hsl(0, 0%, 100%);
+	border: 0.7px solid $light-grey;
+	color: white;
 
 	border-radius: 50%;
 
@@ -58,7 +61,7 @@
 
 .sideNavSeparator {
 	width: 90%;
-	border: 1px solid hsl(0, 0%, 88%);
+	border: 1px solid $light-grey;
 }
 
 .sideNavItem {
@@ -74,10 +77,7 @@
 	margin-top: -8px;
 	margin-bottom: 6px;
 
-	transition: color 0.5s, background-color 0.5s;
-	-webkit-transition: color 0.5s, background-color 0.5s;
-	-moz-transition: color 0.5s, background-color 0.5s;
-	-o-transition: color 0.5s, background-color 0.5s;
+	@include transition(color, background-color);
 
 	&.selectedSideNavItem {
 		color: white;
