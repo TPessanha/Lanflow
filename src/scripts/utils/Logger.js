@@ -35,16 +35,17 @@ const out = {
 				)
 			})
 		];
+		const logFormat = winston.format.printf(info => {
+			return `${info.level}: ${info.message} - (${info.timestamp})`;
+		});
 
 		if (isDev) {
 			transports.push(
 				new winston.transports.Console({
 					format: winston.format.combine(
+						winston.format.align(),
 						winston.format.colorize(),
-						winston.format.timestamp({
-							format: "YYYY-MM-DD HH:mm:ss:SSS"
-						}),
-						winston.format.simple()
+						logFormat
 					),
 					level: "debug"
 				})
@@ -55,6 +56,7 @@ const out = {
 			level: "info",
 			format: winston.format.combine(
 				winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:SSS" }),
+				winston.format.splat(),
 				winston.format.json()
 			),
 			transports
