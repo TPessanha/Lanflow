@@ -10,8 +10,6 @@ cache:
 script:
   - npm run lint
   - npm run test
-  - npm run build
-  - npm run clean
 
 after_success:
   - npm run package:linux
