@@ -72,7 +72,6 @@ const out = {
 			warn: "blue",
 			error: "red"
 		});
-		LOGGER.debug("%o", winston.format.colorize);
 
 		global.LOGGER = LOGGER;
 		return LOGGER;
