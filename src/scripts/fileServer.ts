@@ -46,9 +46,14 @@ export default class FileServer extends net.Server {
 		connectionListener?: (socket: net.Socket) => void
 	) {
 		super(options, connectionListener);
+		//Defaults
 		this.options = {
-			defaultDir: options.defaultDir || path.normalize("./")
+			defaultDir: path.normalize("./")
 		};
+		//New Settigns
+		if (options.defaultDir) {
+			this.defaultDir = options.defaultDir;
+		}
 		this.setupFileServer();
 	}
 
@@ -60,7 +65,7 @@ export default class FileServer extends net.Server {
 			this.options.defaultDir = path.normalize(newDefaultdir);
 			LOGGER.info(`New defaultDir is: ${this.options.defaultDir}`);
 		} else {
-			throw new Error("New path must be absolute.");
+			throw new Error("New defaultDir path must be absolute.");
 		}
 	}
 	/**
