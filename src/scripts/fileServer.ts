@@ -24,30 +24,31 @@ interface IFileHeader {
 }
 
 interface IFileServerOptions {
+	allowHalfOpen?: boolean;
+	pauseOnConnect?: boolean;
+	defaultDir?: string;
+}
+
+interface IFileServerOptionsInternal {
 	defaultDir: string;
 }
+
 /**
  * File transfer implementation server and client,
  * To use create a new FileServer and run listening if you want to receive,
  * use the sendFile if you want to send.
  */
 export default class FileServer extends net.Server {
-	private options: IFileServerOptions = {
-		defaultDir: path.normalize("./") //TODO get this form settings
-	};
+	private options: IFileServerOptionsInternal;
 
 	constructor(
-		options?: {
-			allowHalfOpen?: boolean;
-			pauseOnConnect?: boolean;
-			defaultDir?: string;
-		},
+		options: IFileServerOptions = {},
 		connectionListener?: (socket: net.Socket) => void
 	) {
 		super(options, connectionListener);
-		if (options && options.defaultDir) {
-			this.options.defaultDir = options.defaultDir;
-		}
+		this.options = {
+			defaultDir: options.defaultDir || path.normalize("./")
+		};
 		this.setupFileServer();
 	}
 

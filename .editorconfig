@@ -11,6 +11,6 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 
-[{*.yml,*.yaml,package.json}]
+[{*.yml,*.yaml,package.json,*.scss}]
 indent_style = space
 indent_size = 2

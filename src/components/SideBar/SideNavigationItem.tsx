@@ -59,7 +59,7 @@ export default class SideNavigationItem extends React.Component<
 
 	private handleSelect(event: any) {
 		if (this.props) {
-			LOGGER.info(this.props);
+			LOGGER.debug("Props: %j", this.props);
 			const { onItemSelect, itemPath } = this.props;
 
 			if (onItemSelect) {
