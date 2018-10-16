@@ -6,7 +6,7 @@ const winston = require("winston");
 const out = {
 	/**
 	 * Creates a logger and attach it to global
-	 * if LogPath is not provided get the logger form electron main process.
+	 * if LogPath is not provided get the logger form electron main process with fallback to standard console.
 	 * @param {string} logPath The path where to save the logs.
 	 * @returns {winston.Logger} The logger instance to be used.
 	 */
