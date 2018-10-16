@@ -26,7 +26,7 @@ const out = {
 					logPath,
 					isDev ? "error-dev.log" : "error.log"
 				),
-				level: "error"
+				level: "warn"
 			}),
 			new winston.transports.File({
 				filename: path.join(
@@ -35,19 +35,22 @@ const out = {
 				)
 			})
 		];
-		const logFormat = winston.format.printf(info => {
-			return `${info.level}: ${info.message} - (${info.timestamp})`;
+		const logCustomFormat = winston.format.printf(info => {
+			if (info.level.length >= 17) {
+				return `${info.level}: ${info.message} - (${info.timestamp})`;
+			} else {
+				return `${info.level}:\t ${info.message} - (${info.timestamp})`;
+			}
 		});
 
 		if (isDev) {
 			transports.push(
 				new winston.transports.Console({
 					format: winston.format.combine(
-						winston.format.align(),
 						winston.format.colorize(),
-						logFormat
+						logCustomFormat
 					),
-					level: "debug"
+					level: "silly"
 				})
 			);
 		}
@@ -62,11 +65,14 @@ const out = {
 			transports
 		});
 		winston.addColors({
-			error: "red",
-			warn: "yellow",
+			silly: "grey",
+			debug: "green",
+			verbose: "yellow",
 			info: "cyan",
-			debug: "green"
+			warn: "blue",
+			error: "red"
 		});
+		LOGGER.debug("%o", winston.format.colorize);
 
 		global.LOGGER = LOGGER;
 		return LOGGER;
