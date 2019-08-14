@@ -165,7 +165,7 @@
     "react-svg-loader": "^2.1.0",
     "react-test-renderer": "^16.5.2",
     "redux-devtools": "^3.4.1",
-    "rimraf": "^2.6.2",
+    "rimraf": "^2.7.0",
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
     "speed-measure-webpack-plugin": "^1.2.3",
