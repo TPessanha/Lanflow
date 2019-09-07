@@ -120,7 +120,7 @@
   ],
   "devDependencies": {
     "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-env": "^7.6.0",
     "@babel/preset-react": "^7.0.0",
     "@types/jest": "^23.3.2",
     "@types/node": "^10.9.4",
