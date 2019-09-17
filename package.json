@@ -176,7 +176,7 @@
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "tslint-loader": "^3.6.0",
-    "tslint-react": "^3.6.0",
+    "tslint-react": "^4.1.0",
     "typed-css-modules": "^0.3.6",
     "typescript": "^3.1.1",
     "url-loader": "^1.1.1",
