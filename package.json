@@ -137,7 +137,7 @@
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-preset-react-optimize": "^1.0.1",
     "copy-webpack-plugin": "^4.5.3",
-    "cross-env": "^5.2.0",
+    "cross-env": "^6.0.3",
     "css-loader": "^1.0.0",
     "dotenv": "^6.0.0",
     "dotenv-expand": "^4.2.0",
