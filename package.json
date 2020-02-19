@@ -123,7 +123,7 @@
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
     "@types/jest": "^23.3.2",
-    "@types/node": "^10.9.4",
+    "@types/node": "^13.7.3",
     "@types/react": "^16.4.17",
     "@types/react-dom": "^16.0.8",
     "@types/react-hot-loader": "^4.1.0",
