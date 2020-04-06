@@ -129,7 +129,7 @@
     "@types/react-hot-loader": "^4.1.0",
     "@types/react-router-dom": "^4.3.1",
     "@types/react-test-renderer": "^16.0.2",
-    "autoprefixer": "^9.1.5",
+    "autoprefixer": "^9.7.6",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
