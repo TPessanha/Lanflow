@@ -169,7 +169,7 @@
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
     "speed-measure-webpack-plugin": "^1.2.3",
-    "style-loader": "^0.23.0",
+    "style-loader": "^1.2.1",
     "sw-precache-webpack-plugin": "^0.11.5",
     "ts-jest": "^23.10.3",
     "ts-loader": "^5.2.1",
