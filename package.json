@@ -167,7 +167,7 @@
     "redux-devtools": "^3.4.1",
     "rimraf": "^2.6.2",
     "sass-loader": "^7.1.0",
-    "source-map-loader": "^0.2.4",
+    "source-map-loader": "^1.0.0",
     "speed-measure-webpack-plugin": "^1.2.3",
     "style-loader": "^0.23.0",
     "sw-precache-webpack-plugin": "^0.11.5",
